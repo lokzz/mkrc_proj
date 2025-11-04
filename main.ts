@@ -8,7 +8,7 @@ function cleanup () {
     controller.right.onEvent(ControllerButtonEvent.Pressed, function() {})
 }
 let current_screen = 0
-settings
+//settings
 while (true) {
     switch (current_screen) {
         case 0:
@@ -21,7 +21,10 @@ while (true) {
             game.onPaint(function () {
                 screen.print("Main Menu:\n(Dpad: move, A: select)\n\n\n\n\n\n\n\n\n\n@proj v0.1", 0, 0)
                 // build the menu string & display here
+                screen.print("\n\n\n"+selection, 0, 0)
             })
-            controller.A.onEvent(ControllerButtonEvent.Pressed, function () { })
+            controller.up.onEvent(ControllerButtonEvent.Pressed, function () { selection -= 1})
+            controller.down.onEvent(ControllerButtonEvent.Pressed, function () { selection += 1})
+            pause(60*1000)
     }
 }
