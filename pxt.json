@@ -11,7 +11,8 @@
         "README.md",
         "assets.json",
         "images.g.jres",
-        "images.g.ts"
+        "images.g.ts",
+        "_locales/en-GB/README.md"
     ],
     "testFiles": [
         "test.ts"
