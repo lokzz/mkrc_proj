@@ -6,7 +6,7 @@ function cleanup () {
     controller.left.onEvent(pressDown, function () {})
     controller.right.onEvent(pressDown, function () {})
 }
-let current_screen = 0
+let current_screen = 1
 // keep as-is for now, this should be from 0.5-1.5 (or 0.5-2.0) at max.
 let current_diff = 1
 game.debug = true
