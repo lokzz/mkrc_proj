@@ -1,12 +1,14 @@
-function cleanup () {
-    controller.A.onEvent(pressDown, function () {})
-    controller.B.onEvent(pressDown, function () {})
-    controller.up.onEvent(pressDown, function () {})
-    controller.down.onEvent(pressDown, function () {})
-    controller.left.onEvent(pressDown, function () {})
-    controller.right.onEvent(pressDown, function () {})
+function cleanup() {
+    controller.A.onEvent(pressDown, function () { })
+    controller.B.onEvent(pressDown, function () { })
+    controller.up.onEvent(pressDown, function () { })
+    controller.down.onEvent(pressDown, function () { })
+    controller.left.onEvent(pressDown, function () { })
+    controller.right.onEvent(pressDown, function () { })
 }
 let current_screen = 1
+let prt_id = "-1"
+let prt_summoned: Array<string> = []
 // keep as-is for now, this should be from 0.5-1.5 (or 0.5-2.0) at max.
 let current_diff = 1
 game.debug = true
@@ -23,17 +25,20 @@ while (true) {
             let dbg_pressedData = [0, 0]
             const lvlList = ["Level 1", "Level 2", "Level 3", "Level 4", "Level 5"]
             const diff_lv = ["Easy", "Normal", "Hard"]
-            game.onPaint(function () {
-                if (!(current_screen === 0)) {
-                    return
-                }
-                screen.print(`Main Menu:\n(Dpad: move, A: select)\n\n\n\n\n\n\n\n\npress_data=[${dbg_pressedData[0]}, ${dbg_pressedData[1]}]\n@proj v0.1`, 0, 0)
-                // build the menu string & display here
-                screen.print("\n\n\n\n\n\n\n\n\n" + selection + " - " + difficulty, 0, 0) // debug
-                let builtstr = ""
-                lvlList.forEach(function (name, idx) { builtstr += `${selection === idx ? ">" : ""} ${name} ${selection === idx ? (" - " + diff_lv[difficulty]) : ""}\n`})
-                screen.print("\n\n\n" + builtstr, 0, 0)
-            })
+            prt_id = "0-1"
+            if (prt_summoned.find(function (v, i) { return v === "0-1" }) === undefined) {
+                game.onPaint(function () {
+                    if (!(prt_id === "0-1")) { return }
+
+                    screen.print(`Main Menu:\n(Dpad: move, A: select)\n\n\n\n\n\n\n\n\npress_data=[${dbg_pressedData[0]}, ${dbg_pressedData[1]}]\n@proj v0.1`, 0, 0)
+                    // build the menu string & display here
+                    screen.print("\n\n\n\n\n\n\n\n\n" + selection + " - " + difficulty, 0, 0) // debug
+                    let builtstr = ""
+                    lvlList.forEach(function (name, idx) { builtstr += `${selection === idx ? ">" : ""} ${name} ${selection === idx ? (" - " + diff_lv[difficulty]) : ""}\n` })
+                    screen.print("\n\n\n" + builtstr, 0, 0)
+                })
+                prt_summoned.push("0-1")
+            }
             controller.up.onEvent(pressDown, function () { selection -= 1; selection < 0 ? selection = 4 : false })
             controller.down.onEvent(pressDown, function () { selection += 1; selection > 4 ? selection = 0 : false })
             controller.left.onEvent(pressDown, function () { difficulty -= 1; difficulty < 0 ? difficulty = 2 : false })
@@ -49,9 +54,9 @@ while (true) {
             let upg_atk = sprites.create(assets.image`upg_atk`, SpriteKind.Player)
             // scaling.scaleToPercent(upg_sld, 125, ScaleDirection.Uniformly, ScaleAnchor.Middle)
             // scaling.scaleToPercent(upg_atk, 125, ScaleDirection.Uniformly, ScaleAnchor.Middle)
-            game.onUpdateInterval(50, function() {
+            game.onUpdateInterval(50, function () {
                 if (sel === null) { return }
-                else if (sel === true) { 
+                else if (sel === true) { // again: true = sld, false = atk, null = unselected
                     scaling.scaleToPercent(upg_sld, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
                     scaling.scaleToPercent(upg_atk, 100, ScaleDirection.Uniformly, ScaleAnchor.Middle)
                 }
@@ -60,18 +65,38 @@ while (true) {
                     scaling.scaleToPercent(upg_atk, 150, ScaleDirection.Uniformly, ScaleAnchor.Middle)
                 }
             })
-            controller.left.onEvent(pressDown, function () {sel = !sel})
-            controller.right.onEvent(pressDown, function () {sel = !sel})
+            prt_id = "1-1"
+            if (prt_summoned.find(function (v, i) { return v === "1-1" }) === undefined) {
+                game.onPaint(function () {
+                    if (!(prt_id === "1-1")) { return }
+
+                    screen.print("\n    Choose an upgrade:\n     +DEF   or   +ATK", 2, 0)
+                    if (sel === null) { return }
+                    else if (sel === true) { // again: true = sld, false = atk, null = unselected
+                        screen.print("\n\n\n\n +Defense", 0, 12, 0, image.scaledFont(image.font8, 2))
+                    }
+                    else {
+                        screen.print("\n\n\n\n +Attack", 0, 12, 0, image.scaledFont(image.font8, 2))
+                    }
+                })
+                prt_summoned.push("1-1")
+            }
+            // function updateText()
+            controller.left.onEvent(pressDown, function () { sel = !sel })
+            controller.right.onEvent(pressDown, function () { sel = !sel })
             upg_sld.x -= 35
             upg_atk.x += 35
 
+            controller.A.onEvent(pressDown, function () {
+
+            })
             pauseUntil(() => current_screen === -516)
 
 
 
         default:
             cleanup()
-            game.onPaint(function() {
+            game.onPaint(function () {
                 screen.print("\n\n\n\n   CRASH:\n   UNKNOWN SCREENID " + current_screen + difficulty, 0, 0)
             })
             pauseUntil(() => current_screen === -517)
