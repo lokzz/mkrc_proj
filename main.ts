@@ -74,9 +74,11 @@ while (true) {
                     if (sel === null) { return }
                     else if (sel === true) { // again: true = sld, false = atk, null = unselected
                         screen.print("\n\n\n\n +Defense", 0, 12, 0, image.scaledFont(image.font8, 2))
+                        screen.print("\n\n\n\n\n\n\n\n\n\n   Increases your tank's\n   health", 0, 0)
                     }
                     else {
                         screen.print("\n\n\n\n +Attack", 0, 12, 0, image.scaledFont(image.font8, 2))
+                        screen.print("\n\n\n\n\n\n\n\n\n\n   Upgrades your tank's\n   bullets", 0, 0)
                     }
                 })
                 prt_summoned.push("1-1")
