@@ -1,4 +1,4 @@
-function cleanup() {
+function cleanup () {
     controller.A.onEvent(pressDown, function () { })
     controller.B.onEvent(pressDown, function () { })
     controller.up.onEvent(pressDown, function () { })
@@ -6,28 +6,26 @@ function cleanup() {
     controller.left.onEvent(pressDown, function () { })
     controller.right.onEvent(pressDown, function () { })
 }
+const pressDown = ControllerButtonEvent.Pressed
+
 let current_screen = 1
-let prt_id = "-1"
 let prt_summoned: Array<string> = []
+let prt_id = "-1"
+
 // keep as-is for now, this should be from 0.5-1.5 (or 0.5-2.0) at max.
 let current_diff = 1
+
 game.debug = true
 game.stats = true
-const pressDown = ControllerButtonEvent.Pressed
+
 
 // game data vars go here
 let gameD_Upgrades = [0, 0]
-
-
-// grab potentially saved data
 const savedData = settings.readJSON("BD8f_GameData")
 
 
 // 0 = menu, 1 = upgrades screen, 2-6 = levels 1-5
 while (true) {
-
-    // run between-level logic here?
-
     switch (current_screen) {
         case 0:
             cleanup()
@@ -66,7 +64,7 @@ while (true) {
             let upg_atk = sprites.create(assets.image`upg_atk`, SpriteKind.Player)
             // if (gameD_Upgrades[0] > 2) {
             //     var nimg = assets.image`upg_sld`
-                
+
             //     upg_sld.setImage()
             // }
             // scaling.scaleToPercent(upg_sld, 125, ScaleDirection.Uniformly, ScaleAnchor.Middle)
