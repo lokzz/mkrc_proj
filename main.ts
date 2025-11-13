@@ -14,8 +14,20 @@ let current_diff = 1
 game.debug = true
 game.stats = true
 const pressDown = ControllerButtonEvent.Pressed
+
+// game data vars go here
+let gameD_Upgrades = [0, 0]
+
+
+// grab potentially saved data
+const savedData = settings.readJSON("BD8f_GameData")
+
+
 // 0 = menu, 1 = upgrades screen, 2-6 = levels 1-5
 while (true) {
+
+    // run between-level logic here?
+
     switch (current_screen) {
         case 0:
             cleanup()
@@ -52,6 +64,11 @@ while (true) {
             let sel: any = null // literally a 0 and a 1, true = sld, false = atk, null = unselected
             let upg_sld = sprites.create(assets.image`upg_sld`, SpriteKind.Player)
             let upg_atk = sprites.create(assets.image`upg_atk`, SpriteKind.Player)
+            // if (gameD_Upgrades[0] > 2) {
+            //     var nimg = assets.image`upg_sld`
+                
+            //     upg_sld.setImage()
+            // }
             // scaling.scaleToPercent(upg_sld, 125, ScaleDirection.Uniformly, ScaleAnchor.Middle)
             // scaling.scaleToPercent(upg_atk, 125, ScaleDirection.Uniformly, ScaleAnchor.Middle)
             game.onUpdateInterval(50, function () {
@@ -73,12 +90,12 @@ while (true) {
                     screen.print("\n    Choose an upgrade:\n     +DEF   or   +ATK", 2, 0)
                     if (sel === null) { return }
                     else if (sel === true) { // again: true = sld, false = atk, null = unselected
-                        screen.print("\n\n\n\n +Defense", 0, 12, 0, image.scaledFont(image.font8, 2))
+                        screen.print("\n\n\n\n+Defense " + gameD_Upgrades[0] + "->" + (gameD_Upgrades[0] + 1), 0, 12, 0, image.scaledFont(image.font8, 2))
                         screen.print("\n\n\n\n\n\n\n\n\n\n   Increases your tank's\n   health", 0, 0)
                     }
                     else {
-                        screen.print("\n\n\n\n +Attack", 0, 12, 0, image.scaledFont(image.font8, 2))
-                        screen.print("\n\n\n\n\n\n\n\n\n\n   Upgrades your tank's\n   bullets", 0, 0)
+                        screen.print("\n\n\n\n+Attack  " + gameD_Upgrades[1] + "->" + (gameD_Upgrades[1] + 1), 0, 12, 0, image.scaledFont(image.font8, 2))
+                        screen.print("\n\n\n\n\n\n\n\n\n\n   Upgrades  your tank's\n   bullets", 0, 0)
                     }
                 })
                 prt_summoned.push("1-1")
