@@ -8,7 +8,7 @@ function cleanup () {
 }
 const pressDown = ControllerButtonEvent.Pressed
 
-let current_screen = 1
+let current_screen = 113
 let prt_summoned: Array<string> = []
 let prt_id = "-1"
 
@@ -88,11 +88,23 @@ while (true) {
                     screen.print("\n    Choose an upgrade:\n     +DEF   or   +ATK", 2, 0)
                     if (sel === null) { return }
                     else if (sel === true) { // again: true = sld, false = atk, null = unselected
-                        screen.print("\n\n\n\n+Defense " + gameD_Upgrades[0] + "->" + (gameD_Upgrades[0] + 1), 0, 12, 0, image.scaledFont(image.font8, 2))
+                        let upgrade_str: string
+                        if (gameD_Upgrades[0] >= 3) {
+                            upgrade_str = "Max"
+                        } else {
+                            upgrade_str = "" + gameD_Upgrades[0] + "->" + (gameD_Upgrades[0] + 1)
+                        }
+                        screen.print("\n\n\n\n+Defense " + upgrade_str, 0, 12, 0, image.scaledFont(image.font8, 2))
                         screen.print("\n\n\n\n\n\n\n\n\n\n   Increases your tank's\n   health", 0, 0)
                     }
                     else {
-                        screen.print("\n\n\n\n+Attack  " + gameD_Upgrades[1] + "->" + (gameD_Upgrades[1] + 1), 0, 12, 0, image.scaledFont(image.font8, 2))
+                        let upgrade_str: string
+                        if (gameD_Upgrades[1] >= 3) {
+                            upgrade_str = "Max"
+                        } else {
+                            upgrade_str = "" + gameD_Upgrades[1] + "->" + (gameD_Upgrades[1] + 1)
+                        }
+                        screen.print("\n\n\n\n+Attack  " + upgrade_str, 0, 12, 0, image.scaledFont(image.font8, 2))
                         screen.print("\n\n\n\n\n\n\n\n\n\n   Upgrades  your tank's\n   bullets", 0, 0)
                     }
                 })
@@ -105,7 +117,14 @@ while (true) {
             upg_atk.x += 35
 
             controller.A.onEvent(pressDown, function () {
-
+                if (sel === true && gameD_Upgrades[0] < 3) { // again: true = sld, false = atk, null = unselected
+                    gameD_Upgrades[0] += 1
+                }
+                else if (sel === false && gameD_Upgrades[1] < 3) {
+                    gameD_Upgrades[1] += 1
+                } // wtf?
+                console.log(gameD_Upgrades)
+                return
             })
             pauseUntil(() => current_screen === -516)
 
@@ -114,8 +133,12 @@ while (true) {
         default:
             cleanup()
             game.onPaint(function () {
-                screen.print("\n\n\n\n   CRASH:\n   UNKNOWN SCREENID " + current_screen + difficulty, 0, 0)
+                screen.print("\n\n\n\n   CRASH:\n   UNKNOWN SCREENID " + current_screen, 0, 0)
             })
-            pauseUntil(() => current_screen === -517)
+            pause(5000)
+            game.gameOver(
+                false
+            )
+            
     }
 }
