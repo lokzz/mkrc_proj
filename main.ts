@@ -1,10 +1,10 @@
 function cleanup () {
     controller.A.onEvent(pressDown, function () {})
-    controller.B.onEvent(pressDown, function () {})
-    controller.up.onEvent(pressDown, function () {})
-    controller.down.onEvent(pressDown, function () {})
-    controller.left.onEvent(pressDown, function () {})
-    controller.right.onEvent(pressDown, function () {})
+controller.B.onEvent(pressDown, function () {})
+controller.up.onEvent(pressDown, function () {})
+controller.down.onEvent(pressDown, function () {})
+controller.left.onEvent(pressDown, function () {})
+controller.right.onEvent(pressDown, function () {})
 }
 let current_screen = 1
 // keep as-is for now, this should be from 0.5-1.5 (or 0.5-2.0) at max.
