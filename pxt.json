@@ -1,5 +1,5 @@
 {
-    "name": "proj - Copy",
+    "name": "proj",
     "description": "",
     "dependencies": {
         "device": "*",
@@ -24,5 +24,5 @@
     "supportedTargets": [
         "arcade"
     ],
-    "preferredEditor": "blocksprj"
+    "preferredEditor": "tsprj"
 }
