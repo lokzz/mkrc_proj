@@ -1,11 +1,10 @@
 function cleanup () {
-    prt_id = "-1"
-    controller.A.onEvent(pressDown, function () { })
-    controller.B.onEvent(pressDown, function () { })
-    controller.up.onEvent(pressDown, function () { })
-    controller.down.onEvent(pressDown, function () { })
-    controller.left.onEvent(pressDown, function () { })
-    controller.right.onEvent(pressDown, function () { })
+    controller.A.onEvent(pressDown, function () {})
+controller.B.onEvent(pressDown, function () {})
+controller.up.onEvent(pressDown, function () {})
+controller.down.onEvent(pressDown, function () {})
+controller.left.onEvent(pressDown, function () {})
+controller.right.onEvent(pressDown, function () {})
 }
 const pressDown = ControllerButtonEvent.Pressed
 
