@@ -1,4 +1,5 @@
 function cleanup () {
+    prt_id = "-1"
     controller.A.onEvent(pressDown, function () { })
     controller.B.onEvent(pressDown, function () { })
     controller.up.onEvent(pressDown, function () { })
@@ -8,7 +9,9 @@ function cleanup () {
 }
 const pressDown = ControllerButtonEvent.Pressed
 
-let current_screen = 113
+let sel: any = null // shit fix
+
+let current_screen = 0
 let prt_summoned: Array<string> = []
 let prt_id = "-1"
 
@@ -21,7 +24,8 @@ game.stats = true
 
 // game data vars go here
 let gameD_Upgrades = [0, 0]
-const savedData = settings.readJSON("BD8f_GameData")
+let gameD_scores = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1]] // scores[level(s)]: level[easy, normal, hard]
+const savedData = settings.readJSON("BDDF_GameData")
 
 
 // 0 = menu, 1 = upgrades screen, 2-6 = levels 1-5
@@ -56,10 +60,11 @@ while (true) {
             controller.A.onEvent(pressDown, function () { dbg_isPressedA = true; dbg_pressedData = [selection, difficulty] })
             pauseUntil(() => dbg_isPressedA)
             current_screen = selection + 2
+            break
 
         case 1:
             cleanup()
-            let sel: any = null // literally a 0 and a 1, true = sld, false = atk, null = unselected
+            sel = null // literally a 0 and a 1, true = sld, false = atk, null = unselected
             let upg_sld = sprites.create(assets.image`upg_sld`, SpriteKind.Player)
             let upg_atk = sprites.create(assets.image`upg_atk`, SpriteKind.Player)
             // if (gameD_Upgrades[0] > 2) {
@@ -86,6 +91,7 @@ while (true) {
                     if (!(prt_id === "1-1")) { return }
 
                     screen.print("\n    Choose an upgrade:\n     +DEF   or   +ATK", 2, 0)
+                    console.log(sel)
                     if (sel === null) { return }
                     else if (sel === true) { // again: true = sld, false = atk, null = unselected
                         let upgrade_str: string
@@ -111,27 +117,47 @@ while (true) {
                 prt_summoned.push("1-1")
             }
             // function updateText()
-            controller.left.onEvent(pressDown, function () { sel = !sel })
-            controller.right.onEvent(pressDown, function () { sel = !sel })
+            controller.left.onEvent(pressDown, function () { sel = !sel; console.log("Left")})
+            controller.right.onEvent(pressDown, function () { sel = !sel; console.log("right")})
             upg_sld.x -= 35
             upg_atk.x += 35
 
+            let selected = -1
             controller.A.onEvent(pressDown, function () {
                 if (sel === true && gameD_Upgrades[0] < 3) { // again: true = sld, false = atk, null = unselected
-                    gameD_Upgrades[0] += 1
+                    selected = 0
+                    //gameD_Upgrades[0] += 1
                 }
                 else if (sel === false && gameD_Upgrades[1] < 3) {
-                    gameD_Upgrades[1] += 1
+                    selected = 1
+                    //gameD_Upgrades[1] += 1
                 } // wtf?
-                console.log(gameD_Upgrades)
                 return
             })
-            pauseUntil(() => current_screen === -516)
+            pauseUntil(() => selected != -1) // should use sel instead but meh
+            sprites.destroy(upg_sld)
+            sprites.destroy(upg_atk)
 
+            gameD_Upgrades[selected] += 1 // no way it breaks right
+            
+            current_screen = 2 // testing
 
+            break
+
+        case 2:
+            cleanup()
+            let dt = sprites.create(assets.image`nil`, SpriteKind.Player)
+            dt.sayText("hi")
+            pause(2000)
+            sprites.destroy(dt)
+            current_screen = 1
+            break
 
         default:
             cleanup()
+            screen.fill(15)
+            prt_id = "NoneType"
+            console.logValue("ScreenID", current_screen)
             game.onPaint(function () {
                 screen.print("\n\n\n\n   CRASH:\n   UNKNOWN SCREENID " + current_screen, 0, 0)
             })
@@ -139,6 +165,5 @@ while (true) {
             game.gameOver(
                 false
             )
-            
     }
 }
