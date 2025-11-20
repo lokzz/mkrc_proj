@@ -6,27 +6,27 @@ controller.down.onEvent(pressDown, function () {})
 controller.left.onEvent(pressDown, function () {})
 controller.right.onEvent(pressDown, function () {})
 }
-const pressDown = ControllerButtonEvent.Pressed
-
-let sel: any = null // shit fix
-
-let current_screen = 0
 let prt_summoned: Array<string> = []
+let current_screen = 0
+// shit fix
+let sel: any = null
+const pressDown = ControllerButtonEvent.Pressed
 let prt_id = "-1"
-
 // keep as-is for now, this should be from 0.5-1.5 (or 0.5-2.0) at max.
 let current_diff = 1
-
 game.debug = true
 game.stats = true
-
-
 // game data vars go here
 let gameD_Upgrades = [0, 0]
-let gameD_scores = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1]] // scores[level(s)]: level[easy, normal, hard]
+// scores[level(s)]: level[easy, normal, hard]
+let gameD_scores = [
+[-1, -1, -1],
+[-1, -1, -1],
+[-1, -1, -1],
+[-1, -1, -1],
+[-1, -1, -1]
+]
 const savedData = settings.readJSON("BDDF_GameData")
-
-
 // 0 = menu, 1 = upgrades screen, 2-6 = levels 1-5
 while (true) {
     switch (current_screen) {
@@ -103,13 +103,13 @@ while (true) {
                         screen.print("\n\n\n\n\n\n\n\n\n\n   Increases your tank's\n   health", 0, 0)
                     }
                     else {
-                        let upgrade_str: string
+                        let upgrade_str2: string
                         if (gameD_Upgrades[1] >= 3) {
-                            upgrade_str = "Max"
+                            upgrade_str2 = "Max"
                         } else {
-                            upgrade_str = "" + gameD_Upgrades[1] + "->" + (gameD_Upgrades[1] + 1)
+                            upgrade_str2 = "" + gameD_Upgrades[1] + "->" + (gameD_Upgrades[1] + 1)
                         }
-                        screen.print("\n\n\n\n+Attack  " + upgrade_str, 0, 12, 0, image.scaledFont(image.font8, 2))
+                        screen.print("\n\n\n\n+Attack  " + upgrade_str2, 0, 12, 0, image.scaledFont(image.font8, 2))
                         screen.print("\n\n\n\n\n\n\n\n\n\n   Upgrades  your tank's\n   bullets", 0, 0)
                     }
                 })
