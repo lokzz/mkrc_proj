@@ -709,6 +709,56 @@ ffffffafccccccfaafccccccfaffffff
 8888888888888888888888888888888f
 .fffffffffffffffffffffffffffffff
 `];
+            case "Level1_a":
+            case "anim3":return [img`
+.........fffff.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+fffff....f777f....fffff
+f777f....f777f....f777f
+f777f....fffff....f777f
+fffffffffffffffffffffff
+feeeff77777777777ffeeef
+f777ff77777777777ff777f
+ffffff77fffffff77ffffff
+feeeff77f77777f77ffeeef
+f777ff77f77777f77ff777f
+ffffff77fffffff77ffffff
+feeeff77777777777ffeeef
+f777fffffffffffffff777f
+fffff.............fffff
+feeef.............feeef
+fffff.............fffff
+`, img`
+.........fffff.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+.........f777f.........
+fffff....f777f....fffff
+feeef....f777f....feeef
+feeef....fffff....feeef
+fffffffffffffffffffffff
+f777ff77777777777ff777f
+feeeff77777777777ffeeef
+ffffff77fffffff77ffffff
+f777ff77f77777f77ff777f
+feeeff77f77777f77ffeeef
+ffffff77fffffff77ffffff
+f777ff77777777777ff777f
+feeefffffffffffffffeeef
+fffff.............fffff
+f777f.............f777f
+fffff.............fffff
+`];
         }
         return null;
     })
