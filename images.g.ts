@@ -959,7 +959,7 @@ f 5 5 5 5 5 f
 f 2 2 2 2 2 f 
 f f f f f f f 
 `];
-            case "E01_a":
+            case "E1_a":
             case "anim9":return [img`
 ffff............ffff
 f33f............f33f
@@ -1005,6 +1005,102 @@ ffff...ff33ff...ffff
 ........f33f........
 .......ff33ff.......
 .......f3333f.......
+.......ffffff.......
+`];
+            case "E2_a":
+            case "anim10":return [img`
+ffff............ffff
+f55f............f55f
+f55ffffffffffffff55f
+ffff555555555555ffff
+f44f555555555555f44f
+f44f55ffffffff55f44f
+ffff55f444444f55ffff
+f55f55f444444f55f55f
+f55f55ff4444ff55f55f
+ffff555ff44ff555ffff
+f44f5555ffff5555f44f
+f44f5555f55f5555f44f
+fffff555f55f555fffff
+f55f.ff5f55f5ff.f55f
+f55f.3fff55fff..f55f
+ffff...ff55ff...ffff
+........f55f........
+........f55f........
+........f55f........
+.......ff55ff.......
+.......f5555f.......
+.......ffffff.......
+`, img`
+ffff............ffff
+f44f............f44f
+f44ffffffffffffff44f
+ffff555555555555ffff
+f55f555555555555f55f
+f55f55ffffffff55f55f
+ffff55f444444f55ffff
+f44f55f444444f55f44f
+f44f55ff4444ff55f44f
+ffff555ff44ff555ffff
+f55f5555ffff5555f55f
+f55f5555f55f5555f55f
+fffff555f55f555fffff
+f44f.ff5f55f5ff.f44f
+f44f..fff55fff..f44f
+ffff...ff55ff...ffff
+........f55f........
+........f55f........
+........f55f........
+.......ff55ff.......
+.......f5555f.......
+.......ffffff.......
+`];
+            case "E3_a":
+            case "anim11":return [img`
+ffff............ffff
+f22f............f22f
+f22ffffffffffffff22f
+ffff222222222222ffff
+f44f222222222222f44f
+f44f22ffffffff22f44f
+ffff22f444444f22ffff
+f22f22f444444f22f22f
+f22f22ff4444ff22f22f
+ffff222ff44ff222ffff
+f44f2222ffff2222f44f
+f44f2222f22f2222f44f
+fffff222f22f222fffff
+f22f.ff2f22f2ff.f22f
+f22f..fff22fff..f22f
+ffff...ff22ff...ffff
+........f22f........
+........f22f........
+........f22f........
+.......ff22ff.......
+.......f2222f.......
+.......ffffff.......
+`, img`
+ffff............ffff
+f44f............f44f
+f44ffffffffffffff44f
+ffff222222222222ffff
+f22f222222222222f22f
+f22f22ffffffff22f22f
+ffff22f444444f22ffff
+f44f22f444444f22f44f
+f44f22ff4444ff22f44f
+ffff222ff44ff222ffff
+f22f2222ffff2222f22f
+f22f2222f22f2222f22f
+fffff222f22f222fffff
+f44f.ff2f22f2ff.f44f
+f44f..fff22fff..f44f
+ffff...ff22ff...ffff
+........f22f........
+........f22f........
+........f22f........
+.......ff22ff.......
+.......f2222f.......
 .......ffffff.......
 `];
         }
