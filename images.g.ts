@@ -544,6 +544,7 @@ ffffffafccccccfaafccccccfaffffff
 ................................
 ................................
 ................................
+................................
 ..............fff...............
 .............ff5ff..............
 ............ff555ff.............
@@ -554,7 +555,6 @@ ffffffafccccccfaafccccccfaffffff
 ............f55555f.............
 ............f55555f.............
 ............fffffff.............
-................................
 ................................
 ................................
 ................................
@@ -934,6 +934,78 @@ f f f f f f f f f f
 . f 5 5 5 5 5 5 f . 
 f 5 5 5 2 2 5 5 5 f 
 f f f f f f f f f f 
+`];
+            case "B2_a":
+            case "anim8":return [img`
+. . f f f . . 
+. f f 5 f f . 
+f f 5 5 5 f f 
+f 5 5 5 5 5 f 
+f f f f f f f 
+f 4 2 4 2 4 f 
+f f f f f f f 
+f 5 5 5 5 5 f 
+f 5 5 5 5 5 f 
+f f f f f f f 
+`, img`
+. . f f f . . 
+. f f 2 f f . 
+f f 2 4 2 f f 
+f 5 5 5 5 5 f 
+f f f f f f f 
+f 2 4 2 4 2 f 
+f f f f f f f 
+f 5 5 5 5 5 f 
+f 2 2 2 2 2 f 
+f f f f f f f 
+`];
+            case "E01_a":
+            case "anim9":return [img`
+ffff............ffff
+f33f............f33f
+f33ffffffffffffff33f
+ffff333333333333ffff
+f44f333333333333f44f
+f44f33ffffffff33f44f
+ffff33f444444f33ffff
+f33f33f444444f33f33f
+f33f33ff4444ff33f33f
+ffff333ff44ff333ffff
+f44f3333ffff3333f44f
+f44f3333f33f3333f44f
+fffff333f33f333fffff
+f33f.ff3f33f3ff.f33f
+f33f..fff33fff..f33f
+ffff...ff33ff...ffff
+........f33f........
+........f33f........
+........f33f........
+.......ff33ff.......
+.......f3333f.......
+.......ffffff.......
+`, img`
+ffff............ffff
+f44f............f44f
+f44ffffffffffffff44f
+ffff333333333333ffff
+f33f333333333333f33f
+f33f33ffffffff33f33f
+ffff33f444444f33ffff
+f44f33f444444f33f44f
+f44f33ff4444ff33f44f
+ffff333ff44ff333ffff
+f33f3333ffff3333f33f
+f33f3333f33f3333f33f
+fffff333f33f333fffff
+f44f.ff3f33f3ff.f44f
+f44f..fff33fff..f44f
+ffff...ff33ff...ffff
+........f33f........
+........f33f........
+........f33f........
+.......ff33ff.......
+.......f3333f.......
+.......ffffff.......
 `];
         }
         return null;
