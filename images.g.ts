@@ -883,6 +883,58 @@ ffffffffeffffffffffffffeffffffff
 .......f54f..........f45f.......
 .......ffff..........ffff.......
 `];
+            case "B1_a":
+            case "anim6":return [img`
+. f f f f f . 
+f 4 5 5 5 4 f 
+f 5 5 5 5 5 f 
+f 5 5 5 5 5 f 
+f 5 5 5 5 5 f 
+f 4 5 5 5 4 f 
+. f f f f f . 
+`, img`
+. 1 1 1 1 1 . 
+1 5 4 4 4 5 1 
+1 4 4 4 4 4 1 
+1 4 4 4 4 4 1 
+1 4 4 4 4 4 1 
+1 5 4 4 4 5 1 
+. 1 1 1 1 1 . 
+`];
+            case "B3_a":
+            case "anim7":return [img`
+. . . f f f f . . . 
+. . . f 4 4 f . . . 
+. . . f e e f . . . 
+. . . f f f f . . . 
+. . f f a a f f . . 
+. . f a a a a f . . 
+. . f a a a a f . . 
+. f f a a a a f f . 
+. f a a a a a a f . 
+. f f f f f f f f . 
+. . f e e e e f . . 
+. f f f f f f f f . 
+. f b b b b b b f . 
+f b b b 5 5 b b b f 
+f f f f f f f f f f 
+`, img`
+. . . f f f f . . . 
+. . . f 5 5 f . . . 
+. . . f e e f . . . 
+. . . f f f f . . . 
+. . f f a a f f . . 
+. . f a a a a f . . 
+. . f a a a a f . . 
+. f f a a a a f f . 
+. f 2 5 2 5 2 5 f . 
+. f f f f f f f f . 
+. . f 5 5 5 5 f . . 
+. f f f f f f f f . 
+. f 5 5 5 5 5 5 f . 
+f 5 5 5 2 2 5 5 5 f 
+f f f f f f f f f f 
+`];
         }
         return null;
     })
