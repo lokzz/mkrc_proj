@@ -1,9 +1,10 @@
 {
-    "name": "20251120",
+    "name": "proj",
     "description": "",
     "dependencies": {
         "device": "*",
-        "sprite-scaling": "*"
+        "sprite-scaling": "*",
+        "arcade-screen-transitions": "github:riknoll/arcade-screen-transitions#v0.1.0"
     },
     "files": [
         "main.blocks",

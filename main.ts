@@ -1,10 +1,16 @@
-function cleanup () {
-    controller.A.onEvent(pressDown, function () {})
-    controller.B.onEvent(pressDown, function () {})
-    controller.up.onEvent(pressDown, function () {})
-    controller.down.onEvent(pressDown, function () {})
-    controller.left.onEvent(pressDown, function () {})
-    controller.right.onEvent(pressDown, function () {})
+function cleanup() {
+    controller.A.onEvent(pressDown, function () { })
+    controller.B.onEvent(pressDown, function () { })
+    controller.up.onEvent(pressDown, function () { })
+    controller.down.onEvent(pressDown, function () { })
+    controller.left.onEvent(pressDown, function () { })
+    controller.right.onEvent(pressDown, function () { })
+}
+function doExitScene() {
+    screenTransitions.setZ(5, 200)
+    screenTransitions.startTransition(screenTransitions.Dissolve, 1000, true, true)
+    prt_id = "NoneType"
+    screenTransitions.startTransition(screenTransitions.Dissolve, 1000, false)
 }
 let prt_summoned: Array<string> = []
 let current_screen = 0
@@ -20,13 +26,18 @@ game.stats = true
 let gameD_Upgrades = [0, 0]
 // scores[level(s)]: level[easy, normal, hard]
 let gameD_scores = [
-[-1, -1, -1],
-[-1, -1, -1],
-[-1, -1, -1],
-[-1, -1, -1],
-[-1, -1, -1]
+    [-1, -1, -1],
+    [-1, -1, -1],
+    [-1, -1, -1],
+    [-1, -1, -1],
+    [-1, -1, -1]
 ]
+settings.writeJSON("BDDF_GameData", { upg: gameD_Upgrades, scr: gameD_scores })
 const savedData = settings.readJSON("BDDF_GameData")
+
+gameD_Upgrades = savedData.upg
+gameD_scores = savedData.scr
+
 // 0 = menu, 1 = upgrades screen, 2-6 = levels 1-5
 while (true) {
     switch (current_screen) {
@@ -47,7 +58,7 @@ while (true) {
                     // build the menu string & display here
                     screen.print("\n\n\n\n\n\n\n\n\n" + selection + " - " + difficulty, 0, 0) // debug
                     let builtstr = ""
-                    lvlList.forEach(function (name, idx) { builtstr += `${selection === idx ? ">" : ""} ${name} ${selection === idx ? (" - " + diff_lv[difficulty]) : ""}\n` })
+                    lvlList.forEach(function (name, idx) { builtstr += `${selection === idx ? ">" : ""} ${name} ${selection === idx ? (" - " + diff_lv[difficulty]) : ""}${(selection === idx && gameD_scores[selection][difficulty] != -1) ? " > " + gameD_scores[selection][difficulty] : ""}\n` })
                     screen.print("\n\n\n" + builtstr, 0, 0)
                 })
                 prt_summoned.push("0-1")
@@ -59,6 +70,8 @@ while (true) {
             controller.A.onEvent(pressDown, function () { dbg_isPressedA = true; dbg_pressedData = [selection, difficulty] })
             pauseUntil(() => dbg_isPressedA)
             current_screen = selection + 2
+            
+            doExitScene()
             break
 
         case 1:
@@ -116,8 +129,8 @@ while (true) {
                 prt_summoned.push("1-1")
             }
             // function updateText()
-            controller.left.onEvent(pressDown, function () { sel = !sel; console.log("Left")})
-            controller.right.onEvent(pressDown, function () { sel = !sel; console.log("right")})
+            controller.left.onEvent(pressDown, function () { sel = !sel; console.log("Left") })
+            controller.right.onEvent(pressDown, function () { sel = !sel; console.log("right") })
             upg_sld.x -= 35
             upg_atk.x += 35
 
@@ -138,19 +151,16 @@ while (true) {
             sprites.destroy(upg_atk)
 
             gameD_Upgrades[selected] += 1 // no way it breaks right
-            
-            current_screen = 2 // testing
 
+            current_screen = 0 // testing
+
+            
+            doExitScene()
             break
 
         case 2:
-            cleanup()
-            let dt = sprites.create(assets.image`nil`, SpriteKind.Player)
-            dt.sayText("hi")
-            pause(2000)
-            sprites.destroy(dt)
-            current_screen = 1
-            break
+            let _ = new Sprite(assets.image`Level1`)
+            pauseUntil(() => current_screen == -517)
 
         default:
             cleanup()
