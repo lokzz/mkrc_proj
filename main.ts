@@ -8,8 +8,8 @@ function cleanup() {
 }
 function doExitScene() {
     screenTransitions.setZ(5, 200)
-    screenTransitions.startTransition(screenTransitions.Dissolve, 1000, true, true)
     prt_id = "NoneType"
+    pause(200)
     screenTransitions.startTransition(screenTransitions.Dissolve, 1000, false)
 }
 let prt_summoned: Array<string> = []
@@ -20,7 +20,7 @@ const pressDown = ControllerButtonEvent.Pressed
 let prt_id = "-1"
 // keep as-is for now, this should be from 0.5-1.5 (or 0.5-2.0) at max.
 let current_diff = 1
-game.debug = true
+// game.debug = true
 game.stats = true
 // game data vars go here
 let gameD_Upgrades = [0, 0]
@@ -159,7 +159,9 @@ while (true) {
             break
 
         case 2:
-            let _ = new Sprite(assets.image`Level1`)
+            tiles.setCurrentTilemap(tilemap`level1`)
+            let sptie = sprites.create(assets.image`Level1`, SpriteKind.Player)
+            controller.moveSprite(sptie, 50, 25)
             pauseUntil(() => current_screen == -517)
 
         default:
