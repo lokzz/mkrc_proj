@@ -23,7 +23,7 @@ prt_id = "-1"
 let current_diff = 1
 game.stats = true
 // game data vars go here
-let gameD_Upgrades = [0, 0]
+let gameD_Upgrades = [1, 1]
 // scores[level(s)]: level[easy, normal, hard]
 let gameD_scores = [
 [-1, -1, -1],
@@ -36,6 +36,18 @@ settings.writeJSON("BDDF_GameData", { upg: gameD_Upgrades, scr: gameD_scores })
 const savedData = settings.readJSON("BDDF_GameData")
 gameD_Upgrades = savedData.upg
 gameD_scores = savedData.scr
+
+const enemyHP: { [key: number]: number } = { // subject to change
+    1: 1,
+    2: 3,
+    3: 5
+}
+const playerDMG: { [key: number]: number} = {
+    1: 2,
+    2: 4,
+    3: 6
+}
+
 // 0 = menu, 1 = upgrades screen, 2-6 = levels 1-5
 while (true) {
     switch (current_screen) {
@@ -179,6 +191,11 @@ while (true) {
             let sRange_y: number[] = []
             let sRange_x: number[] = []
             let enemies: [Sprite, Sprite, number, number][] = []
+            const yourLooks: { [key: number]: Image } = {
+                1: assets.image`Level1`,
+                2: assets.image`Level2`,
+                3: assets.image`Level3`
+            }
             const enemyLooks: { [key: number]: Image } = {
                 1: assets.image`E1`,
                 2: assets.image`E2`,
@@ -192,55 +209,48 @@ while (true) {
             let loc_x2 = 0
             let loc_y2 = 0
             console.log(give_pos())
-            let mySprite = sprites.create(img`
-    3 3 
-    3 3 
-    `, SpriteKind.Player)
-            let mySprite2 = sprites.create(img`
-    4 4 4 4 
-    4 4 4 4 
-    4 4 4 4 
-    4 4 4 4 
-    `, SpriteKind.Player)
-            let enemy4 = sprites.create(img`
-    2 2 2 2 
-    2 2 2 2 
-    2 2 2 2 
-    2 2 2 2 
-    `, SpriteKind.Enemy)
-            let imagagag = [img`
-    . 
-    `, img`
-    2 2 2 2 
-    2 2 2 2 
-    2 2 2 2 
-    2 2 2 2 
-    `]
+            let camera = sprites.create(assets.image`nil`, SpriteKind.Player)
+            let player = sprites.create(yourLooks[gameD_Upgrades[0]], SpriteKind.Player)
             game.stats = true
             // game.consoleOverlay.setVisible(true)
-            enemy4.x = 0
-            enemy4.y = 0
-            enemy4.setFlag(SpriteFlag.GhostThroughWalls, true)
-            mySprite2.setStayInScreen(true)
-            scene.cameraFollowSprite(mySprite)
+            player.setStayInScreen(true)
+            scene.cameraFollowSprite(camera)
             tiles.setCurrentTilemap(tilemap`level01_map`)
             // controller.moveSprite(mySprite, 200, 200)
-            mySprite.y = 60 * 16
-            mySprite.vy = -15
-            controller.moveSprite(mySprite2, 40, 40)
+            camera.y = 60 * 16
+            camera.vy = -15
+            controller.moveSprite(player, 40, 40)
             sRange_x = [-2.5 * 16, 2.5 * 16]
+            const effectg = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Fire, ExtraEffectPresetShape.Spark)
             sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
-                if ((enemies[sprites.readDataNumber(teo, "spawner")] as Sprite[])[0] == oan) {return}
-                console.log("isHit!")
+                let d = sprites.readDataNumber(teo, "spawner")
+                if (d == -6) {
+                    let curHP = sprites.readDataNumber(oan, "curHP")
+                    if (curHP - gameD_Upgrades[1] <= 0) {
+                        sprites.setDataNumber(oan, "curHP", -1515)
+                        extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
+                        oan.destroy()
+                    } else {
+                        sprites.setDataNumber(oan, "curHP", curHP - gameD_Upgrades[1])
+                    }
+                    teo.destroy()
+                    return
+                }
+                if ((enemies[d] as Sprite[])[0] == oan) {return}
             })
-            let enemyLevels = [1, 1]
+            sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (oan, teo) {
+                let d = sprites.readDataNumber(teo, "spawner")
+                if (d == -6) { return }
+                
+            })
+            const enemyLevels = [1, 1] // change per level!!
             game.onUpdate(function () {
                 // console.log(mySprite.tilemapLocation().x)
                 tick += 1
-                if (tick % 250 == 0 && mySprite.y > 120) {
-                    console.log(mySprite2.y)
+                if (tick % 250 == 0 && camera.y > 120) {
+                    console.log(player.y)
                     let nloc2 = give_pos()
-                    let newTarget = sprites.create(imagagag[0], SpriteKind.Food)
+                    let newTarget = sprites.create(assets.image`nil`, SpriteKind.Food)
                     newTarget.x = nloc2["x"]
                     newTarget.y = nloc2["y"]
                     let enemyLevel = randint(enemyLevels[0], enemyLevels[1])
@@ -250,39 +260,37 @@ while (true) {
                     newEnemy.y = nloc2["y"]
                     newEnemy.setFlag(SpriteFlag.GhostThroughWalls, true)
                     newEnemy.follow(newTarget, 18)
+                    sprites.setDataNumber(newEnemy, "curHP", enemyHP[enemyLevel])
                     // controller.moveSprite(newEnemy, 40, 40)
                     enemies.push([newEnemy, newTarget, tick, enemyLevel])
                 }
-                if (tick % 50 == 0) {
+                if (tick % 25 == 0) {
                     enemies.forEach(function (i, idx) {
                         let s = (i as Sprite[])
+                        if (sprites.readDataNumber(s[0], "curHP") === -1515) { return }
                         let t = (i as number[])[2]
                         let l = (i as number[])[3]
-                        if ((tick - t) > (75 / 1)) { // change the 1 here to make things harder later on
-                            let p = sprites.createProjectileFromSprite(assets.image`B`, s[0], 0, 50)
+                        if ((tick - t) > (100 / 1)) { // change the 1 here to make things harder later on
+                            let p = sprites.createProjectileFromSprite(bullets[l], s[0], 0, 50)
                             sprites.setDataNumber(p, "spawner", idx)
                         }
                     })
                 }
-                if (tick % (75 / 3))
+                if (tick % (25 * 2) == 0) { // player fire rate
+                    let p = sprites.createProjectileFromSprite(bullets[gameD_Upgrades[1]], player, 0, -75)
+                    sprites.setDataNumber(p, "spawner", -6)
+                }
                 enemies.forEach(function (i, idx) {
                     let w = (i as Sprite[]) // dude wtf
+                    if (w[0] === null) { return }
                     if (w[1] && w[0].x == w[1].x && w[0].y == w[1].y) {
                         w[1].destroy()
                     }
-                    // if (enemy4.tilemapLocation().x / 16 < 2 || enemy4.tilemapLocation().x / 16 > 8) {
-                    //     enemy4.vx = enemy4.tilemapLocation().x < 5 ? -16 : 16
-                    //     enemy4.vy = 5
-                    // } else if (spriteutils.distanceBetween(mySprite2, enemy4) > 4 * 16) {
-                    //     enemy4.follow(mySprite2, 16)
-                    // } else {
-                    //     enemy4.follow(null)
-                    // }
                 })
-                if (mySprite2.isHittingTile(CollisionDirection.Top)) {
-                    mySprite.vy = 0
+                if (player.isHittingTile(CollisionDirection.Top)) {
+                    camera.vy = 0
                 } else {
-                    mySprite.vy = -25
+                    camera.vy = -25
                 }
             })
             pauseUntil(() => current_screen == -517)
