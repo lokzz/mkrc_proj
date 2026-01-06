@@ -1,43 +1,41 @@
-function cleanup() {
-    controller.A.onEvent(pressDown, function () { })
-    controller.B.onEvent(pressDown, function () { })
-    controller.up.onEvent(pressDown, function () { })
-    controller.down.onEvent(pressDown, function () { })
-    controller.left.onEvent(pressDown, function () { })
-    controller.right.onEvent(pressDown, function () { })
-}
-function doExitScene() {
+function doExitScene () {
     screenTransitions.setZ(5, 200)
     prt_id = "NoneType"
     pause(200)
     screenTransitions.startTransition(screenTransitions.Dissolve, 1000, false)
 }
-let prt_summoned: Array<string> = []
-let current_screen = 2
+function cleanup () {
+    controller.A.onEvent(pressDown, function () { })
+controller.B.onEvent(pressDown, function () { })
+controller.up.onEvent(pressDown, function () { })
+controller.down.onEvent(pressDown, function () { })
+controller.left.onEvent(pressDown, function () { })
+controller.right.onEvent(pressDown, function () { })
+}
+let prt_id = ""
 // shit fix
 let sel: any = null
+let prt_summoned: Array<string> = []
+let current_screen = 2
 const pressDown = ControllerButtonEvent.Pressed
-let prt_id = "-1"
+prt_id = "-1"
 // keep as-is for now, this should be from 0.5-1.5 (or 0.5-2.0) at max.
 let current_diff = 1
-// game.debug = true
 game.stats = true
 // game data vars go here
 let gameD_Upgrades = [0, 0]
 // scores[level(s)]: level[easy, normal, hard]
 let gameD_scores = [
-    [-1, -1, -1],
-    [-1, -1, -1],
-    [-1, -1, -1],
-    [-1, -1, -1],
-    [-1, -1, -1]
+[-1, -1, -1],
+[-1, -1, -1],
+[-1, -1, -1],
+[-1, -1, -1],
+[-1, -1, -1]
 ]
 settings.writeJSON("BDDF_GameData", { upg: gameD_Upgrades, scr: gameD_scores })
 const savedData = settings.readJSON("BDDF_GameData")
-
 gameD_Upgrades = savedData.upg
 gameD_scores = savedData.scr
-
 // 0 = menu, 1 = upgrades screen, 2-6 = levels 1-5
 while (true) {
     switch (current_screen) {
@@ -175,17 +173,24 @@ while (true) {
             let v = 0
             let nloc: number[] = []
             let tick = 0
-            let range_y: number[] = []
-            let range_x: number[] = []
+            let range_y2: number[] = []
+            let range_x2: number[] = []
             let placement: number[] = []
             let sRange_y: number[] = []
             let sRange_x: number[] = []
             let enemies: [Sprite, Sprite, number, number][] = []
-            let bullets: Image[] = [
-
-            ]
-            let loc_x = 0
-            let loc_y = 0
+            const enemyLooks: { [key: number]: Image } = {
+                1: assets.image`E1`,
+                2: assets.image`E2`,
+                3: assets.image`E3`
+            }
+            const bullets: { [key: number]: Image } = {
+                1: assets.image`B1`,
+                2: assets.image`B2`,
+                3: assets.image`B3`
+            }
+            let loc_x2 = 0
+            let loc_y2 = 0
             console.log(give_pos())
             let mySprite = sprites.create(img`
     3 3 
@@ -224,44 +229,46 @@ while (true) {
             mySprite.vy = -15
             controller.moveSprite(mySprite2, 40, 40)
             sRange_x = [-2.5 * 16, 2.5 * 16]
-            sprites.onOverlap(\)
+            sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
+                if ((enemies[sprites.readDataNumber(teo, "spawner")] as Sprite[])[0] == oan) {return}
+                console.log("isHit!")
+            })
+            let enemyLevels = [1, 1]
             game.onUpdate(function () {
                 // console.log(mySprite.tilemapLocation().x)
                 tick += 1
                 if (tick % 250 == 0 && mySprite.y > 120) {
                     console.log(mySprite2.y)
-                    let nloc = give_pos()
+                    let nloc2 = give_pos()
                     let newTarget = sprites.create(imagagag[0], SpriteKind.Food)
-                    newTarget.x = nloc["x"]
-                    newTarget.y = nloc["y"]
-                    let newEnemy = sprites.create(imagagag[1], SpriteKind.Enemy)
+                    newTarget.x = nloc2["x"]
+                    newTarget.y = nloc2["y"]
+                    let enemyLevel = randint(enemyLevels[0], enemyLevels[1])
+                    let newEnemy = sprites.create(enemyLooks[enemyLevel], SpriteKind.Enemy)
                     v = scene.cameraProperty(CameraProperty.X)
                     newEnemy.x = randint(0, 1) == 1 ? v - (16 * 5) : v + (16 * 5)
-                    newEnemy.y = nloc["y"]
+                    newEnemy.y = nloc2["y"]
                     newEnemy.setFlag(SpriteFlag.GhostThroughWalls, true)
                     newEnemy.follow(newTarget, 18)
                     // controller.moveSprite(newEnemy, 40, 40)
-                    enemies.push([newEnemy, newTarget, tick, 0])
+                    enemies.push([newEnemy, newTarget, tick, enemyLevel])
                 }
                 if (tick % 50 == 0) {
                     enemies.forEach(function (i, idx) {
                         let s = (i as Sprite[])
                         let t = (i as number[])[2]
-                        if ((tick - t) > 75) {
-                            sprites.createProjectileFromSprite(img`
-                    3 3 3 3 
-                    3 3 3 3 
-                    3 3 3 3 
-                    3 3 3 3 
-                `, s[0], 0, 50)
+                        let l = (i as number[])[3]
+                        if ((tick - t) > (75 / 1)) { // change the 1 here to make things harder later on
+                            let p = sprites.createProjectileFromSprite(assets.image`B`, s[0], 0, 50)
+                            sprites.setDataNumber(p, "spawner", idx)
                         }
                     })
                 }
-                if (tick % (75 / ))
+                if (tick % (75 / 3))
                 enemies.forEach(function (i, idx) {
-                    let v = (i as Sprite[]) // dude wtf
-                    if (v[1] && v[0].x == v[1].x && v[0].y == v[1].y) {
-                        v[1].destroy()
+                    let w = (i as Sprite[]) // dude wtf
+                    if (w[1] && w[0].x == w[1].x && w[0].y == w[1].y) {
+                        w[1].destroy()
                     }
                     // if (enemy4.tilemapLocation().x / 16 < 2 || enemy4.tilemapLocation().x / 16 > 8) {
                     //     enemy4.vx = enemy4.tilemapLocation().x < 5 ? -16 : 16
@@ -278,7 +285,6 @@ while (true) {
                     mySprite.vy = -25
                 }
             })
-
             pauseUntil(() => current_screen == -517)
 
         default:
