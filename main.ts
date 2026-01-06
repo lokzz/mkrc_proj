@@ -13,7 +13,7 @@ function doExitScene() {
     screenTransitions.startTransition(screenTransitions.Dissolve, 1000, false)
 }
 let prt_summoned: Array<string> = []
-let current_screen = 0
+let current_screen = 2
 // shit fix
 let sel: any = null
 const pressDown = ControllerButtonEvent.Pressed
@@ -159,9 +159,126 @@ while (true) {
             break
 
         case 2:
-            tiles.setCurrentTilemap(tilemap`level1`)
-            let sptie = sprites.create(assets.image`Level1`, SpriteKind.Player)
-            controller.moveSprite(sptie, 50, 25)
+            // function enemy_logic(enemy: Sprite, player2: Sprite) {
+            //     let placement = [
+            //         randint(0 - sRange_x[0], 0 - sRange_x[1]) + scene.cameraProperty(CameraProperty.X),
+            //         Math.max((8 * 16), randint(0 - sRange_y[0], 0 - sRange_y[1]) + scene.cameraProperty(CameraProperty.Y))
+            //     ]
+            // }
+            function give_pos() {
+                let range_x = [-2.5 * 16, 2.5 * 16]
+                let range_y = [3 * 16, 7 * 16]
+                let loc_x = randint(0 - range_x[0], 0 - range_x[1]) + scene.cameraProperty(CameraProperty.X)
+                let loc_y = Math.max((8 * 16), randint(0 - range_y[0], 0 - range_y[1]) + scene.cameraProperty(CameraProperty.Y))
+                return { "x": loc_x, "y": loc_y }
+            }
+            let v = 0
+            let nloc: number[] = []
+            let tick = 0
+            let range_y: number[] = []
+            let range_x: number[] = []
+            let placement: number[] = []
+            let sRange_y: number[] = []
+            let sRange_x: number[] = []
+            let enemies: [Sprite, Sprite, number, number][] = []
+            let bullets: Image[] = [
+
+            ]
+            let loc_x = 0
+            let loc_y = 0
+            console.log(give_pos())
+            let mySprite = sprites.create(img`
+    3 3 
+    3 3 
+    `, SpriteKind.Player)
+            let mySprite2 = sprites.create(img`
+    4 4 4 4 
+    4 4 4 4 
+    4 4 4 4 
+    4 4 4 4 
+    `, SpriteKind.Player)
+            let enemy4 = sprites.create(img`
+    2 2 2 2 
+    2 2 2 2 
+    2 2 2 2 
+    2 2 2 2 
+    `, SpriteKind.Enemy)
+            let imagagag = [img`
+    . 
+    `, img`
+    2 2 2 2 
+    2 2 2 2 
+    2 2 2 2 
+    2 2 2 2 
+    `]
+            game.stats = true
+            // game.consoleOverlay.setVisible(true)
+            enemy4.x = 0
+            enemy4.y = 0
+            enemy4.setFlag(SpriteFlag.GhostThroughWalls, true)
+            mySprite2.setStayInScreen(true)
+            scene.cameraFollowSprite(mySprite)
+            tiles.setCurrentTilemap(tilemap`level01_map`)
+            // controller.moveSprite(mySprite, 200, 200)
+            mySprite.y = 60 * 16
+            mySprite.vy = -15
+            controller.moveSprite(mySprite2, 40, 40)
+            sRange_x = [-2.5 * 16, 2.5 * 16]
+            sprites.onOverlap(\)
+            game.onUpdate(function () {
+                // console.log(mySprite.tilemapLocation().x)
+                tick += 1
+                if (tick % 250 == 0 && mySprite.y > 120) {
+                    console.log(mySprite2.y)
+                    let nloc = give_pos()
+                    let newTarget = sprites.create(imagagag[0], SpriteKind.Food)
+                    newTarget.x = nloc["x"]
+                    newTarget.y = nloc["y"]
+                    let newEnemy = sprites.create(imagagag[1], SpriteKind.Enemy)
+                    v = scene.cameraProperty(CameraProperty.X)
+                    newEnemy.x = randint(0, 1) == 1 ? v - (16 * 5) : v + (16 * 5)
+                    newEnemy.y = nloc["y"]
+                    newEnemy.setFlag(SpriteFlag.GhostThroughWalls, true)
+                    newEnemy.follow(newTarget, 18)
+                    // controller.moveSprite(newEnemy, 40, 40)
+                    enemies.push([newEnemy, newTarget, tick, 0])
+                }
+                if (tick % 50 == 0) {
+                    enemies.forEach(function (i, idx) {
+                        let s = (i as Sprite[])
+                        let t = (i as number[])[2]
+                        if ((tick - t) > 75) {
+                            sprites.createProjectileFromSprite(img`
+                    3 3 3 3 
+                    3 3 3 3 
+                    3 3 3 3 
+                    3 3 3 3 
+                `, s[0], 0, 50)
+                        }
+                    })
+                }
+                if (tick % (75 / ))
+                enemies.forEach(function (i, idx) {
+                    let v = (i as Sprite[]) // dude wtf
+                    if (v[1] && v[0].x == v[1].x && v[0].y == v[1].y) {
+                        v[1].destroy()
+                    }
+                    // if (enemy4.tilemapLocation().x / 16 < 2 || enemy4.tilemapLocation().x / 16 > 8) {
+                    //     enemy4.vx = enemy4.tilemapLocation().x < 5 ? -16 : 16
+                    //     enemy4.vy = 5
+                    // } else if (spriteutils.distanceBetween(mySprite2, enemy4) > 4 * 16) {
+                    //     enemy4.follow(mySprite2, 16)
+                    // } else {
+                    //     enemy4.follow(null)
+                    // }
+                })
+                if (mySprite2.isHittingTile(CollisionDirection.Top)) {
+                    mySprite.vy = 0
+                } else {
+                    mySprite.vy = -25
+                }
+            })
+
             pauseUntil(() => current_screen == -517)
 
         default:
