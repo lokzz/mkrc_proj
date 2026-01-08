@@ -16,7 +16,7 @@ let prt_id = ""
 // shit fix
 let sel: any = null
 let prt_summoned: Array<string> = []
-let current_screen = 2
+let current_screen = 0
 const pressDown = ControllerButtonEvent.Pressed
 prt_id = "-1"
 // keep as-is for now, this should be from 0.5-1.5 (or 0.5-2.0) at max.
@@ -52,7 +52,7 @@ const playerDMG: { [key: number]: number } = {
     2: 4,
     3: 6
 }
-const playerHP: { [key: number]: number } = { // what does "scaling" meaning
+const playerHP: { [key: number]: number } = { // what does "scaling" mean smh
     1: 4,
     2: 6,
     3: 10
@@ -224,6 +224,7 @@ while (true) {
             enemies.push([boss, sprites.create(assets.image`nil`, SpriteKind.Goto), 99999999, 99999901])
 
             const effectg = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Fire, ExtraEffectPresetShape.Spark)
+            const effectp = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Smoke, ExtraEffectPresetShape.Spark)
             sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
                 let d = sprites.readDataNumber(teo, "spawner")
                 if (d == -6) {
@@ -244,12 +245,12 @@ while (true) {
                         }
                         statusbar.value = newHP
                         sprites.setDataNumber(oan, "curHP", newHP)
+                        extraEffects.createSpreadEffectAt(effectp, teo.x, teo.y, 100, 10)
                     }
                     teo.destroy()
                     return
                 }
-                console.log(enemies)
-                if ((enemies[d] as Sprite[])[0] == oan) {return}
+                if ((enemies[d] as Sprite[])[0] == oan) { return }
             })
             sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (oan, teo) {
                 let d = sprites.readDataNumber(teo, "spawner")
@@ -267,6 +268,7 @@ while (true) {
                     statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
                     statusbar.max = playerHP[gameD_Upgrades[0]]
                 }
+                extraEffects.createSpreadEffectAt(effectp, teo.x, teo.y, 100)
                 statusbar.value = statusbar.value - dmg
                 if (statusbar.value <= 0) {
                     game.onUpdate(function () {}) // stop it
@@ -298,11 +300,27 @@ while (true) {
                 }
                 teo.destroy()
             })
+            sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (oan, teo) {
+                let statusbar
+                statusbar = statusbars.getStatusBarAttachedTo(StatusBarKind.Health, oan)
+                if (statusbar === undefined) {
+                    statusbar = statusbars.create(20, 4, StatusBarKind.Health)
+                    statusbar.attachToSprite(oan, 2)
+                    statusbar.positionDirection(CollisionDirection.Bottom)
+                    statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
+                    statusbar.max = playerHP[gameD_Upgrades[0]]
+                }
+                let dmg = Math.round(sprites.readDataNumber(teo, "curHP")*2/3)/2
+                sprites.setDataNumber(teo, "curHP", -1515)
+                extraEffects.createSpreadEffectAt(effectg, teo.x, teo.y, 100, 10)
+                teo.destroy()
+                // statusbar.value = statusbar.value - dmg
+            })
             const enemyLevels = [1] // change per level!!
             game.onUpdate(function () {
                 // console.log(mySprite.tilemapLocation().x)
                 tick += 1
-                if (tick % 250 == 0 && camera.y > 120) { // spawn rate here!!!
+                if (tick % (250 / current_diff) == 0 && camera.y > 120) { // spawn rate here!!!
                     console.log(player.y)
                     let nloc2 = give_pos()
                     let newTarget = sprites.create(assets.image`nil`, SpriteKind.Goto)
@@ -313,7 +331,6 @@ while (true) {
                     v = scene.cameraProperty(CameraProperty.X)
                     newEnemy.x = randint(0, 1) == 1 ? v - (16 * 5) : v + (16 * 5)
                     newEnemy.y = nloc2["y"]
-                    newEnemy.setFlag(SpriteFlag.GhostThroughWalls, true)
                     newEnemy.follow(newTarget, 18)
                     sprites.setDataNumber(newEnemy, "maxHP", enemyHP[enemyLevel])
                     sprites.setDataNumber(newEnemy, "curHP", enemyHP[enemyLevel])
