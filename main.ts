@@ -1,9 +1,3 @@
-function doExitScene () {
-    screenTransitions.setZ(5, 200)
-    prt_id = "NoneType"
-    pause(200)
-    screenTransitions.startTransition(screenTransitions.Dissolve, 1000, false)
-}
 function cleanup () {
     controller.A.onEvent(pressDown, function () { })
 controller.B.onEvent(pressDown, function () { })
@@ -37,15 +31,25 @@ const savedData = settings.readJSON("BDDF_GameData")
 gameD_Upgrades = savedData.upg
 gameD_scores = savedData.scr
 
+const enemyDMG: { [key: number]: number } = { // level = dmg for now lol
+    1: 1,
+    2: 2,
+    3: 3
+}
 const enemyHP: { [key: number]: number } = { // subject to change
     1: 1,
     2: 3,
     3: 5
 }
-const playerDMG: { [key: number]: number} = {
+const playerDMG: { [key: number]: number } = {
     1: 2,
     2: 4,
     3: 6
+}
+const playerHP: { [key: number]: number } = { // what does "scaling" meaning
+    1: 1,
+    2: 6,
+    3: 10
 }
 
 // 0 = menu, 1 = upgrades screen, 2-6 = levels 1-5
@@ -80,8 +84,6 @@ while (true) {
             controller.A.onEvent(pressDown, function () { dbg_isPressedA = true; dbg_pressedData = [selection, difficulty] })
             pauseUntil(() => dbg_isPressedA)
             current_screen = selection + 2
-            
-            doExitScene()
             break
 
         case 1:
@@ -164,34 +166,24 @@ while (true) {
 
             current_screen = 0 // testing
 
-            
-            doExitScene()
             break
 
         case 2:
-            // function enemy_logic(enemy: Sprite, player2: Sprite) {
-            //     let placement = [
-            //         randint(0 - sRange_x[0], 0 - sRange_x[1]) + scene.cameraProperty(CameraProperty.X),
-            //         Math.max((8 * 16), randint(0 - sRange_y[0], 0 - sRange_y[1]) + scene.cameraProperty(CameraProperty.Y))
-            //     ]
-            // }
+            game.pushScene()
+
             function give_pos() {
                 let range_x = [-2.5 * 16, 2.5 * 16]
-                let range_y = [3 * 16, 7 * 16]
+                let range_y = [4 * 16, 7 * 16]
                 let loc_x = randint(0 - range_x[0], 0 - range_x[1]) + scene.cameraProperty(CameraProperty.X)
                 let loc_y = Math.max((8 * 16), randint(0 - range_y[0], 0 - range_y[1]) + scene.cameraProperty(CameraProperty.Y))
                 return { "x": loc_x, "y": loc_y }
             }
             let v = 0
-            let nloc: number[] = []
             let tick = 0
-            let range_y2: number[] = []
-            let range_x2: number[] = []
-            let placement: number[] = []
-            let sRange_y: number[] = []
-            let sRange_x: number[] = []
-            let enemies: [Sprite, Sprite, number, number][] = []
-            const yourLooks: { [key: number]: Image } = {
+            let gameIsOver = false
+            let enemies: [Sprite, Sprite, number, number][] = [] // thing itself, walkTo, lastFireTick, level
+
+            const yourLooks: { [key: number]: Image } = { // okay maybe this should be outside here
                 1: assets.image`Level1`,
                 2: assets.image`Level2`,
                 3: assets.image`Level3`
@@ -206,21 +198,22 @@ while (true) {
                 2: assets.image`B2`,
                 3: assets.image`B3`
             }
-            let loc_x2 = 0
-            let loc_y2 = 0
-            console.log(give_pos())
+
+            tiles.setCurrentTilemap(tilemap`level01_map`)
+            
             let camera = sprites.create(assets.image`nil`, SpriteKind.Player)
             let player = sprites.create(yourLooks[gameD_Upgrades[0]], SpriteKind.Player)
-            game.stats = true
-            // game.consoleOverlay.setVisible(true)
+            
+            controller.moveSprite(player, 40, 40)
             player.setStayInScreen(true)
+            player.y = 58 * 16
+
             scene.cameraFollowSprite(camera)
-            tiles.setCurrentTilemap(tilemap`level01_map`)
-            // controller.moveSprite(mySprite, 200, 200)
             camera.y = 60 * 16
             camera.vy = -15
-            controller.moveSprite(player, 40, 40)
-            sRange_x = [-2.5 * 16, 2.5 * 16]
+
+            // let boss =
+
             const effectg = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Fire, ExtraEffectPresetShape.Spark)
             sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
                 let d = sprites.readDataNumber(teo, "spawner")
@@ -231,35 +224,86 @@ while (true) {
                         extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                         oan.destroy()
                     } else {
-                        sprites.setDataNumber(oan, "curHP", curHP - gameD_Upgrades[1])
+                        let newHP = curHP - gameD_Upgrades[1]
+                        let statusbar
+                        statusbar = statusbars.getStatusBarAttachedTo(StatusBarKind.EnemyHealth, oan)
+                        if (statusbar === undefined) {
+                            statusbar = statusbars.create(20, 4, StatusBarKind.EnemyHealth)
+                            statusbar.attachToSprite(oan, 2)
+                            statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
+                            statusbar.max = sprites.readDataNumber(oan, "maxHP")
+                        }
+                        statusbar.value = newHP
+                        sprites.setDataNumber(oan, "curHP", newHP)
                     }
                     teo.destroy()
                     return
                 }
+                console.log(enemies)
                 if ((enemies[d] as Sprite[])[0] == oan) {return}
             })
             sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (oan, teo) {
                 let d = sprites.readDataNumber(teo, "spawner")
                 if (d == -6) { return }
-                
+                let dmg = enemyDMG[(enemies[d] as number[])[3]]
+                let statusbar
+                statusbar = statusbars.getStatusBarAttachedTo(StatusBarKind.Health, oan)
+                if (statusbar === undefined) {
+                    statusbar = statusbars.create(20, 4, StatusBarKind.Health)
+                    statusbar.attachToSprite(oan, 2)
+                    statusbar.positionDirection(CollisionDirection.Bottom)
+                    statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
+                    statusbar.max = playerHP[gameD_Upgrades[0]]
+                }
+                statusbar.value = statusbar.value - dmg
+                if (statusbar.value <= 0) {
+                    game.onUpdate(function () {}) // stop it
+                    camera.vy = 0
+                    controller.moveSprite(player, 0, 0)
+                    scene.cameraFollowSprite(oan)
+                    pause(500)
+                    enemies.forEach(function (i, idx) {
+                        let theTarget = (i as Sprite[])[0]
+                        sprites.setDataNumber(theTarget, "curHP", -1515)
+                    })
+                    let effecty = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Smoke, ExtraEffectPresetShape.Cloud)
+                    extraEffects.createSpreadEffectAt(effecty, oan.x, oan.y, 1250, 25)
+                    scene.cameraShake(2, 600)
+                    pause(500)
+                    enemies.forEach(function (i, idx) {
+                        let theTarget = (i as Sprite[])[0]
+                        extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100, 10, 10)
+                        theTarget.destroy()
+                    })
+                    scene.cameraShake(4, 1100)
+                    pause(1000)
+                    scene.cameraShake(3, 750)
+                    extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 1000, 100, 100)
+                    oan.destroy()
+                    pause(1000)
+                    current_screen = 0
+                    gameIsOver = true
+                }
+                teo.destroy()
             })
-            const enemyLevels = [1, 1] // change per level!!
+            const enemyLevels = [1] // change per level!!
             game.onUpdate(function () {
                 // console.log(mySprite.tilemapLocation().x)
                 tick += 1
-                if (tick % 250 == 0 && camera.y > 120) {
+                if (tick % 250 == 0 && camera.y > 120) { // spawn rate here!!!
                     console.log(player.y)
                     let nloc2 = give_pos()
                     let newTarget = sprites.create(assets.image`nil`, SpriteKind.Food)
                     newTarget.x = nloc2["x"]
                     newTarget.y = nloc2["y"]
-                    let enemyLevel = randint(enemyLevels[0], enemyLevels[1])
+                    let enemyLevel = enemyLevels[randint(0, enemyLevels.length-1)]
                     let newEnemy = sprites.create(enemyLooks[enemyLevel], SpriteKind.Enemy)
                     v = scene.cameraProperty(CameraProperty.X)
                     newEnemy.x = randint(0, 1) == 1 ? v - (16 * 5) : v + (16 * 5)
                     newEnemy.y = nloc2["y"]
                     newEnemy.setFlag(SpriteFlag.GhostThroughWalls, true)
                     newEnemy.follow(newTarget, 18)
+                    sprites.setDataNumber(newEnemy, "maxHP", enemyHP[enemyLevel])
                     sprites.setDataNumber(newEnemy, "curHP", enemyHP[enemyLevel])
                     // controller.moveSprite(newEnemy, 40, 40)
                     enemies.push([newEnemy, newTarget, tick, enemyLevel])
@@ -270,19 +314,24 @@ while (true) {
                         if (sprites.readDataNumber(s[0], "curHP") === -1515) { return }
                         let t = (i as number[])[2]
                         let l = (i as number[])[3]
-                        if ((tick - t) > (100 / 1)) { // change the 1 here to make things harder later on
-                            let p = sprites.createProjectileFromSprite(bullets[l], s[0], 0, 50)
-                            sprites.setDataNumber(p, "spawner", idx)
+                        switch (l) {
+                            case 1: // only enemy level present here...
+                                if (tick - t > 75) { // enemy fire rate!!! (1 tick = 0.033 seconds)
+                                    (enemies[idx] as number[])[2] = tick
+                                    let p = sprites.createProjectileFromSprite(bullets[l], s[0], 0, 50)
+                                    sprites.setDataNumber(p, "spawner", idx)
+                                }
                         }
                     })
                 }
-                if (tick % (25 * 2) == 0) { // player fire rate
+                if (tick % 50 == 51) { // player fire rate
                     let p = sprites.createProjectileFromSprite(bullets[gameD_Upgrades[1]], player, 0, -75)
                     sprites.setDataNumber(p, "spawner", -6)
                 }
                 enemies.forEach(function (i, idx) {
-                    let w = (i as Sprite[]) // dude wtf
+                    let w = (i as Sprite[]) // dude why
                     if (w[0] === null) { return }
+                    if (sprites.readDataNumber(w[0], "curHP") === -1515) { return }
                     if (w[1] && w[0].x == w[1].x && w[0].y == w[1].y) {
                         w[1].destroy()
                     }
@@ -293,7 +342,12 @@ while (true) {
                     camera.vy = -25
                 }
             })
-            pauseUntil(() => current_screen == -517)
+
+            pauseUntil(() => gameIsOver == true)
+            // current_screen should be set in their separate death logic handlers
+            
+            game.popScene()
+            break
 
         default:
             cleanup()

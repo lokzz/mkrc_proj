@@ -6,7 +6,9 @@
         "sprite-scaling": "*",
         "arcade-screen-transitions": "github:riknoll/arcade-screen-transitions#v0.1.0",
         "arcade-sprite-data": "github:microsoft/arcade-sprite-data#v0.2.1",
-        "Extra Effects": "github:alexszeto/extra-effects#v3.1.0"
+        "Extra Effects": "github:alexszeto/extra-effects#v3.1.0",
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
+        "pxt-arcade-image-transform": "github:robo-technical-group/pxt-arcade-image-transform#v1.0.9"
     },
     "files": [
         "main.blocks",

@@ -1,0 +1,342 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+<block id="rsf)M!D9#6HU+wy@kOgw" type="function_definition">
+<mutation name="doExitScene" >
+</mutation>
+<statement name="STACK">
+<block id="r+Hi3)F$0gbO3lR0w:mw" type="screen_transitions_set_z">
+<value name="cutoffZ">
+<shadow type="math_number">
+<field name="NUM">5</field>
+</shadow>
+</value>
+<value name="renderZ">
+<shadow type="math_number">
+<field name="NUM">200</field>
+</shadow>
+</value>
+<next>
+<block id="xs$70|d7-p?q_B)ADi8%" type="variables_set">
+<field name="VAR">prt_id</field>
+<value name="VALUE">
+<shadow type="math_number"><field name="NUM">0</field></shadow>
+<block type="text">
+<field name="TEXT">NoneType</field>
+</block>
+</value>
+<next>
+<block id="!_yoVz=hAJ]U(.NUA![(" type="device_pause">
+<value name="pause">
+<shadow type="timePicker">
+<field name="ms">200</field>
+</shadow>
+</value>
+<next>
+<block id="Y]^.hD#Ic[7D)l8iT/ZI" type="screen_transitions_start_transition">
+<value name="transition">
+<shadow type="screen_transitions_field_editor">
+<field name="transition">screenTransitions.Dissolve</field>
+</shadow>
+</value>
+<value name="time">
+<shadow type="timePicker">
+<field name="ms">1000</field>
+</shadow>
+</value>
+<value name="reverse">
+<shadow type="logic_boolean">
+<field name="BOOL">FALSE</field>
+</shadow>
+</value>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</statement>
+</block>
+<block id="Do+03K@Aeae7M%PNW6n," type="function_definition">
+<mutation name="cleanup" >
+</mutation>
+<statement name="STACK">
+<block id="v)?-8{(bM|(Yd!h8p7GA" type="typescript_statement">
+<mutation numlines="1" line0="controller.A.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; &#125;&#41;" />
+<next>
+<block id="]s3nx;Rvj=_aKzWnbs[X" type="typescript_statement">
+<mutation numlines="1" line0="controller.B.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; &#125;&#41;" />
+<next>
+<block id="av`EA]z7@c07RxMkE3FP" type="typescript_statement">
+<mutation numlines="1" line0="controller.up.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; &#125;&#41;" />
+<next>
+<block id="}[zD@?,tote.rLcz73BR" type="typescript_statement">
+<mutation numlines="1" line0="controller.down.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; &#125;&#41;" />
+<next>
+<block id="r;z95nA2zA6@J2WN1wPV" type="typescript_statement">
+<mutation numlines="1" line0="controller.left.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; &#125;&#41;" />
+<next>
+<block id="MXO@g.E.#CyPPSBhK*@!" type="typescript_statement">
+<mutation numlines="1" line0="controller.right.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; &#125;&#41;" />
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</statement>
+</block>
+<block id="xRRgvHNlG#rZ^u`HECiY" type="pxt-on-start">
+<statement name="HANDLER">
+<block id="RYNGU?x^tYYBnY9xB!CH" type="typescript_statement">
+<mutation declaredvars="prt_summoned" numlines="1" line0="let prt_summoned&#58; Array&#60;string&#62; &#61; &#91;&#93;" />
+<next>
+<block id="[ArpgY#+jf5^oN]}MCLo" type="typescript_statement">
+<mutation declaredvars="sel" numlines="1" line0="let sel&#58; any &#61; null" />
+<next>
+<block id="sq9B:%*@]eJpl7wy,1WP" type="typescript_statement">
+<mutation declaredvars="prt_id" numlines="1" line0="let prt_id &#61; &#34;&#34;" />
+<next>
+<block id="pks-P!W75(!v^4(4E.|d" type="variables_set">
+<field name="VAR">current_screen</field>
+<value name="VALUE">
+<shadow type="math_number">
+<field name="NUM">2</field>
+</shadow>
+</value>
+<next>
+<block id="%IF(=:f8u-!rE!`G9gNM" type="typescript_statement">
+<mutation declaredvars="pressDown" numlines="1" line0="const pressDown &#61; ControllerButtonEvent.Pressed" />
+<next>
+<block id="lD)2c.~T5bK$C@[t6x.]" type="variables_set">
+<field name="VAR">prt_id</field>
+<value name="VALUE">
+<shadow type="math_number"><field name="NUM">0</field></shadow>
+<block type="text">
+<field name="TEXT">-1</field>
+</block>
+</value>
+<next>
+<block id="k@NZvJ0Q*_5D]=}}Qcjq" type="variables_set">
+<field name="VAR">current_diff</field>
+<value name="VALUE">
+<shadow type="math_number">
+<field name="NUM">1</field>
+</shadow>
+</value>
+<next>
+<block id="Lg)Cd_rjXpK.P:j_z`.Y" type="typescript_statement">
+<mutation numlines="1" line0="game.stats &#61; true" />
+<next>
+<block id="wQ~5jgyGX6K(%q/tA;_)" type="variables_set">
+<field name="VAR">gameD_Upgrades</field>
+<value name="VALUE">
+<shadow type="math_number"><field name="NUM">0</field></shadow>
+<block type="lists_create_with">
+<mutation items="2" />
+<value name="ADD0">
+<shadow type="math_number">
+<field name="NUM">1</field>
+</shadow>
+</value>
+<value name="ADD1">
+<shadow type="math_number">
+<field name="NUM">1</field>
+</shadow>
+</value>
+</block>
+</value>
+<next>
+<block id="SC;$/Vwv6NM-%8JgRFuH" type="variables_set">
+<field name="VAR">gameD_scores</field>
+<value name="VALUE">
+<shadow type="math_number"><field name="NUM">0</field></shadow>
+<block type="lists_create_with">
+<mutation items="5" />
+<value name="ADD0">
+<block type="lists_create_with">
+<mutation items="3" />
+<value name="ADD0">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD1">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD2">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+</block>
+</value>
+<value name="ADD1">
+<block type="lists_create_with">
+<mutation items="3" />
+<value name="ADD0">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD1">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD2">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+</block>
+</value>
+<value name="ADD2">
+<block type="lists_create_with">
+<mutation items="3" />
+<value name="ADD0">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD1">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD2">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+</block>
+</value>
+<value name="ADD3">
+<block type="lists_create_with">
+<mutation items="3" />
+<value name="ADD0">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD1">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD2">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+</block>
+</value>
+<value name="ADD4">
+<block type="lists_create_with">
+<mutation items="3" />
+<value name="ADD0">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD1">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+<value name="ADD2">
+<shadow type="math_number">
+<field name="NUM">-1</field>
+</shadow>
+</value>
+</block>
+</value>
+</block>
+</value>
+<next>
+<block id="ys$!=kR}Dw1Bv4zu~Gb[" type="typescript_statement">
+<mutation numlines="1" line0="settings.writeJSON&#40;&#34;BDDF_GameData&#34;&#44; &#123; upg&#58; gameD_Upgrades&#44; scr&#58; gameD_scores &#125;&#41;" />
+<next>
+<block id="=zsw0o$#r[2jPUQNfW)D" type="typescript_statement">
+<mutation declaredvars="savedData" numlines="1" line0="const savedData &#61; settings.readJSON&#40;&#34;BDDF_GameData&#34;&#41;" />
+<next>
+<block id="8l0C)yy_,eVPn]fnYh):" type="typescript_statement">
+<mutation numlines="1" line0="gameD_Upgrades &#61; savedData.upg" />
+<next>
+<block id="G~K;;cHAE3/F3AR@|S+w" type="typescript_statement">
+<mutation numlines="1" line0="gameD_scores &#61; savedData.scr" />
+<next>
+<block id="F@xK54jm9!%D}:mcN-N4" type="typescript_statement">
+<mutation declaredvars="enemyDMG" numlines="5" line0="const enemyDMG&#58; &#123; &#91;key&#58; number&#93;&#58; number &#125; &#61; &#123; &#47;&#47; level &#61; dmg for now lol" line1="    1&#58; 1&#44;" line2="    2&#58; 2&#44;" line3="    3&#58; 3" line4="&#125;" />
+<next>
+<block id="hs=!PkG!:bS-{)Pp2+@:" type="typescript_statement">
+<mutation declaredvars="enemyHP" numlines="5" line0="const enemyHP&#58; &#123; &#91;key&#58; number&#93;&#58; number &#125; &#61; &#123; &#47;&#47; subject to change" line1="    1&#58; 1&#44;" line2="    2&#58; 3&#44;" line3="    3&#58; 5" line4="&#125;" />
+<next>
+<block id="Ri`_UdA^BVa`XFlT~Z_b" type="typescript_statement">
+<mutation declaredvars="playerDMG" numlines="5" line0="const playerDMG&#58; &#123; &#91;key&#58; number&#93;&#58; number &#125; &#61; &#123;" line1="    1&#58; 2&#44;" line2="    2&#58; 4&#44;" line3="    3&#58; 6" line4="&#125;" />
+<next>
+<block id="QO]]6f!{M4[0Ey[`JyS;" type="typescript_statement">
+<mutation declaredvars="playerHP" numlines="5" line0="const playerHP&#58; &#123; &#91;key&#58; number&#93;&#58; number &#125; &#61; &#123; &#47;&#47; what does &#34;scaling&#34; meaning" line1="    1&#58; 4&#44;" line2="    2&#58; 6&#44;" line3="    3&#58; 10" line4="&#125;" />
+<next>
+<block id="^dfotI2Jh2Wd}@{][#}[" type="device_while">
+<value name="COND">
+<shadow type="logic_boolean">
+<field name="BOOL">TRUE</field>
+</shadow>
+</value>
+<statement name="DO">
+<block id="Rpv!~kQ{tE!6UX~y#,uT" type="typescript_statement">
+<mutation numlines="261" line0="switch &#40;current_screen&#41; &#123;" line1="        case 0&#58;" line2="            cleanup&#40;&#41;" line3="            let selection &#61; 0 &#47;&#47; bump this up by 2 when using this var to modify current_screen" line4="            let difficulty &#61; 1 &#47;&#47; 0 &#61; ez 1 &#61; normal&#44; 2 &#61; hard &#40;optional code&#44; ez &#61; 0.5x spawn&#47;hp?&#44; normal &#61; 1x&#44; hard &#61; 1.5x&#41;" line5="            let dbg_isPressedA &#61; false" line6="            let dbg_pressedData &#61; &#91;0&#44; 0&#93;" line7="            const lvlList &#61; &#91;&#34;Level 1&#34;&#44; &#34;Level 2&#34;&#44; &#34;Level 3&#34;&#44; &#34;Level 4&#34;&#44; &#34;Level 5&#34;&#93;" line8="            const diff_lv &#61; &#91;&#34;Easy&#34;&#44; &#34;Normal&#34;&#44; &#34;Hard&#34;&#93;" line9="            prt_id &#61; &#34;0-1&#34;" line10="            if &#40;prt_summoned.find&#40;function &#40;v&#44; i&#41; &#123; return v &#61;&#61;&#61; &#34;0-1&#34; &#125;&#41; &#61;&#61;&#61; undefined&#41; &#123;" line11="                game.onPaint&#40;function &#40;&#41; &#123;" line12="                    if &#40;!&#40;prt_id &#61;&#61;&#61; &#34;0-1&#34;&#41;&#41; &#123; return &#125;" line13="" line14="                    screen.print&#40;&#96;Main Menu&#58;&#92;n&#40;Dpad&#58; move&#44; A&#58; select&#41;&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;npress_data&#61;&#91;$&#123;dbg_pressedData&#91;0&#93;&#125;&#44; $&#123;dbg_pressedData&#91;1&#93;&#125;&#93;&#92;n&#64;proj v0.1&#96;&#44; 0&#44; 0&#41;" line15="                    &#47;&#47; build the menu string &#38; display here" line16="                    screen.print&#40;&#34;&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#34; &#43; selection &#43; &#34; - &#34; &#43; difficulty&#44; 0&#44; 0&#41; &#47;&#47; debug" line17="                    let builtstr &#61; &#34;&#34;" line18="                    lvlList.forEach&#40;function &#40;name&#44; idx&#41; &#123; builtstr &#43;&#61; &#96;$&#123;selection &#61;&#61;&#61; idx ? &#34;&#62;&#34; &#58; &#34;&#34;&#125; $&#123;name&#125; $&#123;selection &#61;&#61;&#61; idx ? &#40;&#34; - &#34; &#43; diff_lv&#91;difficulty&#93;&#41; &#58; &#34;&#34;&#125;$&#123;&#40;selection &#61;&#61;&#61; idx &#38;&#38; gameD_scores&#91;selection&#93;&#91;difficulty&#93; !&#61; -1&#41; ? &#34; &#62; &#34; &#43; gameD_scores&#91;selection&#93;&#91;difficulty&#93; &#58; &#34;&#34;&#125;&#92;n&#96; &#125;&#41;" line19="                    screen.print&#40;&#34;&#92;n&#92;n&#92;n&#34; &#43; builtstr&#44; 0&#44; 0&#41;" line20="                &#125;&#41;" line21="                prt_summoned.push&#40;&#34;0-1&#34;&#41;" line22="            &#125;" line23="            controller.up.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; selection -&#61; 1&#59; selection &#60; 0 ? selection &#61; 4 &#58; false &#125;&#41;" line24="            controller.down.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; selection &#43;&#61; 1&#59; selection &#62; 4 ? selection &#61; 0 &#58; false &#125;&#41;" line25="            controller.left.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; difficulty -&#61; 1&#59; difficulty &#60; 0 ? difficulty &#61; 2 &#58; false &#125;&#41;" line26="            controller.right.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; difficulty &#43;&#61; 1&#59; difficulty &#62; 2 ? difficulty &#61; 0 &#58; false &#125;&#41;" line27="            controller.A.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; dbg_isPressedA &#61; true&#59; dbg_pressedData &#61; &#91;selection&#44; difficulty&#93; &#125;&#41;" line28="            pauseUntil&#40;&#40;&#41; &#61;&#62; dbg_isPressedA&#41;" line29="            current_screen &#61; selection &#43; 2" line30="            " line31="            doExitScene&#40;&#41;" line32="            break" line33="" line34="        case 1&#58;" line35="            cleanup&#40;&#41;" line36="            sel &#61; null &#47;&#47; literally a 0 and a 1&#44; true &#61; sld&#44; false &#61; atk&#44; null &#61; unselected" line37="            let upg_sld &#61; sprites.create&#40;assets.image&#96;upg_sld&#96;&#44; SpriteKind.Player&#41;" line38="            let upg_atk &#61; sprites.create&#40;assets.image&#96;upg_atk&#96;&#44; SpriteKind.Player&#41;" line39="            &#47;&#47; if &#40;gameD_Upgrades&#91;0&#93; &#62; 2&#41; &#123;" line40="            &#47;&#47;     var nimg &#61; assets.image&#96;upg_sld&#96;" line41="" line42="            &#47;&#47;     upg_sld.setImage&#40;&#41;" line43="            &#47;&#47; &#125;" line44="            &#47;&#47; scaling.scaleToPercent&#40;upg_sld&#44; 125&#44; ScaleDirection.Uniformly&#44; ScaleAnchor.Middle&#41;" line45="            &#47;&#47; scaling.scaleToPercent&#40;upg_atk&#44; 125&#44; ScaleDirection.Uniformly&#44; ScaleAnchor.Middle&#41;" line46="            game.onUpdateInterval&#40;50&#44; function &#40;&#41; &#123;" line47="                if &#40;sel &#61;&#61;&#61; null&#41; &#123; return &#125;" line48="                else if &#40;sel &#61;&#61;&#61; true&#41; &#123; &#47;&#47; again&#58; true &#61; sld&#44; false &#61; atk&#44; null &#61; unselected" line49="                    scaling.scaleToPercent&#40;upg_sld&#44; 150&#44; ScaleDirection.Uniformly&#44; ScaleAnchor.Middle&#41;" line50="                    scaling.scaleToPercent&#40;upg_atk&#44; 100&#44; ScaleDirection.Uniformly&#44; ScaleAnchor.Middle&#41;" line51="                &#125;" line52="                else &#123;" line53="                    scaling.scaleToPercent&#40;upg_sld&#44; 100&#44; ScaleDirection.Uniformly&#44; ScaleAnchor.Middle&#41;" line54="                    scaling.scaleToPercent&#40;upg_atk&#44; 150&#44; ScaleDirection.Uniformly&#44; ScaleAnchor.Middle&#41;" line55="                &#125;" line56="            &#125;&#41;" line57="            prt_id &#61; &#34;1-1&#34;" line58="            if &#40;prt_summoned.find&#40;function &#40;v&#44; i&#41; &#123; return v &#61;&#61;&#61; &#34;1-1&#34; &#125;&#41; &#61;&#61;&#61; undefined&#41; &#123;" line59="                game.onPaint&#40;function &#40;&#41; &#123;" line60="                    if &#40;!&#40;prt_id &#61;&#61;&#61; &#34;1-1&#34;&#41;&#41; &#123; return &#125;" line61="" line62="                    screen.print&#40;&#34;&#92;n    Choose an upgrade&#58;&#92;n     &#43;DEF   or   &#43;ATK&#34;&#44; 2&#44; 0&#41;" line63="                    console.log&#40;sel&#41;" line64="                    if &#40;sel &#61;&#61;&#61; null&#41; &#123; return &#125;" line65="                    else if &#40;sel &#61;&#61;&#61; true&#41; &#123; &#47;&#47; again&#58; true &#61; sld&#44; false &#61; atk&#44; null &#61; unselected" line66="                        let upgrade_str&#58; string" line67="                        if &#40;gameD_Upgrades&#91;0&#93; &#62;&#61; 3&#41; &#123;" line68="                            upgrade_str &#61; &#34;Max&#34;" line69="                        &#125; else &#123;" line70="                            upgrade_str &#61; &#34;&#34; &#43; gameD_Upgrades&#91;0&#93; &#43; &#34;-&#62;&#34; &#43; &#40;gameD_Upgrades&#91;0&#93; &#43; 1&#41;" line71="                        &#125;" line72="                        screen.print&#40;&#34;&#92;n&#92;n&#92;n&#92;n&#43;Defense &#34; &#43; upgrade_str&#44; 0&#44; 12&#44; 0&#44; image.scaledFont&#40;image.font8&#44; 2&#41;&#41;" line73="                        screen.print&#40;&#34;&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n   Increases your tank&#39;s&#92;n   health&#34;&#44; 0&#44; 0&#41;" line74="                    &#125;" line75="                    else &#123;" line76="                        let upgrade_str2&#58; string" line77="                        if &#40;gameD_Upgrades&#91;1&#93; &#62;&#61; 3&#41; &#123;" line78="                            upgrade_str2 &#61; &#34;Max&#34;" line79="                        &#125; else &#123;" line80="                            upgrade_str2 &#61; &#34;&#34; &#43; gameD_Upgrades&#91;1&#93; &#43; &#34;-&#62;&#34; &#43; &#40;gameD_Upgrades&#91;1&#93; &#43; 1&#41;" line81="                        &#125;" line82="                        screen.print&#40;&#34;&#92;n&#92;n&#92;n&#92;n&#43;Attack  &#34; &#43; upgrade_str2&#44; 0&#44; 12&#44; 0&#44; image.scaledFont&#40;image.font8&#44; 2&#41;&#41;" line83="                        screen.print&#40;&#34;&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n&#92;n   Upgrades  your tank&#39;s&#92;n   bullets&#34;&#44; 0&#44; 0&#41;" line84="                    &#125;" line85="                &#125;&#41;" line86="                prt_summoned.push&#40;&#34;1-1&#34;&#41;" line87="            &#125;" line88="            &#47;&#47; function updateText&#40;&#41;" line89="            controller.left.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; sel &#61; !sel&#59; console.log&#40;&#34;Left&#34;&#41; &#125;&#41;" line90="            controller.right.onEvent&#40;pressDown&#44; function &#40;&#41; &#123; sel &#61; !sel&#59; console.log&#40;&#34;right&#34;&#41; &#125;&#41;" line91="            upg_sld.x -&#61; 35" line92="            upg_atk.x &#43;&#61; 35" line93="" line94="            let selected &#61; -1" line95="            controller.A.onEvent&#40;pressDown&#44; function &#40;&#41; &#123;" line96="                if &#40;sel &#61;&#61;&#61; true &#38;&#38; gameD_Upgrades&#91;0&#93; &#60; 3&#41; &#123; &#47;&#47; again&#58; true &#61; sld&#44; false &#61; atk&#44; null &#61; unselected" line97="                    selected &#61; 0" line98="                    &#47;&#47;gameD_Upgrades&#91;0&#93; &#43;&#61; 1" line99="                &#125;" line100="                else if &#40;sel &#61;&#61;&#61; false &#38;&#38; gameD_Upgrades&#91;1&#93; &#60; 3&#41; &#123;" line101="                    selected &#61; 1" line102="                    &#47;&#47;gameD_Upgrades&#91;1&#93; &#43;&#61; 1" line103="                &#125; &#47;&#47; wtf?" line104="                return" line105="            &#125;&#41;" line106="            pauseUntil&#40;&#40;&#41; &#61;&#62; selected !&#61; -1&#41; &#47;&#47; should use sel instead but meh" line107="            sprites.destroy&#40;upg_sld&#41;" line108="            sprites.destroy&#40;upg_atk&#41;" line109="" line110="            gameD_Upgrades&#91;selected&#93; &#43;&#61; 1 &#47;&#47; no way it breaks right" line111="" line112="            current_screen &#61; 0 &#47;&#47; testing" line113="" line114="            " line115="            doExitScene&#40;&#41;" line116="            break" line117="" line118="        case 2&#58;" line119="            function give_pos&#40;&#41; &#123;" line120="                let range_x &#61; &#91;-2.5 &#42; 16&#44; 2.5 &#42; 16&#93;" line121="                let range_y &#61; &#91;4 &#42; 16&#44; 7 &#42; 16&#93;" line122="                let loc_x &#61; randint&#40;0 - range_x&#91;0&#93;&#44; 0 - range_x&#91;1&#93;&#41; &#43; scene.cameraProperty&#40;CameraProperty.X&#41;" line123="                let loc_y &#61; Math.max&#40;&#40;8 &#42; 16&#41;&#44; randint&#40;0 - range_y&#91;0&#93;&#44; 0 - range_y&#91;1&#93;&#41; &#43; scene.cameraProperty&#40;CameraProperty.Y&#41;&#41;" line124="                return &#123; &#34;x&#34;&#58; loc_x&#44; &#34;y&#34;&#58; loc_y &#125;" line125="            &#125;" line126="            let v &#61; 0" line127="            let tick &#61; 0" line128="            let enemies&#58; &#91;Sprite&#44; Sprite&#44; number&#44; number&#93;&#91;&#93; &#61; &#91;&#93;" line129="            const yourLooks&#58; &#123; &#91;key&#58; number&#93;&#58; Image &#125; &#61; &#123; &#47;&#47; okay maybe this should be outside here" line130="                1&#58; assets.image&#96;Level1&#96;&#44;" line131="                2&#58; assets.image&#96;Level2&#96;&#44;" line132="                3&#58; assets.image&#96;Level3&#96;" line133="            &#125;" line134="            const enemyLooks&#58; &#123; &#91;key&#58; number&#93;&#58; Image &#125; &#61; &#123;" line135="                1&#58; assets.image&#96;E1&#96;&#44;" line136="                2&#58; assets.image&#96;E2&#96;&#44;" line137="                3&#58; assets.image&#96;E3&#96;" line138="            &#125;" line139="            const bullets&#58; &#123; &#91;key&#58; number&#93;&#58; Image &#125; &#61; &#123;" line140="                1&#58; assets.image&#96;B1&#96;&#44;" line141="                2&#58; assets.image&#96;B2&#96;&#44;" line142="                3&#58; assets.image&#96;B3&#96;" line143="            &#125;" line144="" line145="            tiles.setCurrentTilemap&#40;tilemap&#96;level01_map&#96;&#41;" line146="            " line147="            let camera &#61; sprites.create&#40;assets.image&#96;nil&#96;&#44; SpriteKind.Player&#41;" line148="            let player &#61; sprites.create&#40;yourLooks&#91;gameD_Upgrades&#91;0&#93;&#93;&#44; SpriteKind.Player&#41;" line149="            " line150="            controller.moveSprite&#40;player&#44; 40&#44; 40&#41;" line151="            player.setStayInScreen&#40;true&#41;" line152="            player.y &#61; 58 &#42; 16" line153="" line154="            scene.cameraFollowSprite&#40;camera&#41;" line155="            camera.y &#61; 60 &#42; 16" line156="            camera.vy &#61; -15" line157="" line158="            &#47;&#47; let boss &#61;" line159="" line160="            const effectg &#61; extraEffects.createFullPresetsSpreadEffectData&#40;ExtraEffectPresetColor.Fire&#44; ExtraEffectPresetShape.Spark&#41;" line161="            sprites.onOverlap&#40;SpriteKind.Enemy&#44; SpriteKind.Projectile&#44; function &#40;oan&#44; teo&#41; &#123;" line162="                let d &#61; sprites.readDataNumber&#40;teo&#44; &#34;spawner&#34;&#41;" line163="                if &#40;d &#61;&#61; -6&#41; &#123;" line164="                    let curHP &#61; sprites.readDataNumber&#40;oan&#44; &#34;curHP&#34;&#41;" line165="                    if &#40;curHP - gameD_Upgrades&#91;1&#93; &#60;&#61; 0&#41; &#123;" line166="                        sprites.setDataNumber&#40;oan&#44; &#34;curHP&#34;&#44; -1515&#41;" line167="                        extraEffects.createSpreadEffectAt&#40;effectg&#44; oan.x&#44; oan.y&#44; 100&#41;" line168="                        oan.destroy&#40;&#41;" line169="                    &#125; else &#123;" line170="                        let newHP &#61; curHP - gameD_Upgrades&#91;1&#93;" line171="                        let statusbar" line172="                        statusbar &#61; statusbars.getStatusBarAttachedTo&#40;StatusBarKind.EnemyHealth&#44; oan&#41;" line173="                        if &#40;statusbar &#61;&#61;&#61; undefined&#41; &#123;" line174="                            statusbar &#61; statusbars.create&#40;20&#44; 4&#44; StatusBarKind.EnemyHealth&#41;" line175="                            statusbar.attachToSprite&#40;oan&#44; 2&#41;" line176="                            statusbar.max &#61; sprites.readDataNumber&#40;oan&#44; &#34;maxHP&#34;&#41;" line177="                        &#125;" line178="                        statusbar.value &#61; newHP" line179="                        sprites.setDataNumber&#40;oan&#44; &#34;curHP&#34;&#44; newHP&#41;" line180="                    &#125;" line181="                    teo.destroy&#40;&#41;" line182="                    return" line183="                &#125;" line184="                if &#40;&#40;enemies&#91;d&#93; as Sprite&#91;&#93;&#41;&#91;0&#93; &#61;&#61; oan&#41; &#123;return&#125;" line185="            &#125;&#41;" line186="            sprites.onOverlap&#40;SpriteKind.Player&#44; SpriteKind.Projectile&#44; function &#40;oan&#44; teo&#41; &#123;" line187="                let e &#61; sprites.readDataNumber&#40;teo&#44; &#34;spawner&#34;&#41;" line188="                if &#40;e &#61;&#61; -6&#41; &#123; return &#125;" line189="                " line190="            &#125;&#41;" line191="            const enemyLevels &#61; &#91;1&#44; 1&#93; &#47;&#47; change per level!!" line192="            game.onUpdate&#40;function &#40;&#41; &#123;" line193="                &#47;&#47; console.log&#40;mySprite.tilemapLocation&#40;&#41;.x&#41;" line194="                tick &#43;&#61; 1" line195="                if &#40;tick &#37; 250 &#61;&#61; 0 &#38;&#38; camera.y &#62; 120&#41; &#123; &#47;&#47; spawn rate here!!!" line196="                    console.log&#40;player.y&#41;" line197="                    let nloc2 &#61; give_pos&#40;&#41;" line198="                    let newTarget &#61; sprites.create&#40;assets.image&#96;nil&#96;&#44; SpriteKind.Food&#41;" line199="                    newTarget.x &#61; nloc2&#91;&#34;x&#34;&#93;" line200="                    newTarget.y &#61; nloc2&#91;&#34;y&#34;&#93;" line201="                    let enemyLevel &#61; randint&#40;enemyLevels&#91;0&#93;&#44; enemyLevels&#91;1&#93;&#41;" line202="                    let newEnemy &#61; sprites.create&#40;enemyLooks&#91;enemyLevel&#93;&#44; SpriteKind.Enemy&#41;" line203="                    v &#61; scene.cameraProperty&#40;CameraProperty.X&#41;" line204="                    newEnemy.x &#61; randint&#40;0&#44; 1&#41; &#61;&#61; 1 ? v - &#40;16 &#42; 5&#41; &#58; v &#43; &#40;16 &#42; 5&#41;" line205="                    newEnemy.y &#61; nloc2&#91;&#34;y&#34;&#93;" line206="                    newEnemy.setFlag&#40;SpriteFlag.GhostThroughWalls&#44; true&#41;" line207="                    newEnemy.follow&#40;newTarget&#44; 18&#41;" line208="                    sprites.setDataNumber&#40;newEnemy&#44; &#34;maxHP&#34;&#44; enemyHP&#91;enemyLevel&#93;&#41;" line209="                    sprites.setDataNumber&#40;newEnemy&#44; &#34;curHP&#34;&#44; enemyHP&#91;enemyLevel&#93;&#41;" line210="                    &#47;&#47; controller.moveSprite&#40;newEnemy&#44; 40&#44; 40&#41;" line211="                    enemies.push&#40;&#91;newEnemy&#44; newTarget&#44; tick&#44; enemyLevel&#93;&#41;" line212="                &#125;" line213="                if &#40;tick &#37; 25 &#61;&#61; 0&#41; &#123;" line214="                    enemies.forEach&#40;function &#40;i&#44; idx&#41; &#123;" line215="                        let s &#61; &#40;i as Sprite&#91;&#93;&#41;" line216="                        if &#40;sprites.readDataNumber&#40;s&#91;0&#93;&#44; &#34;curHP&#34;&#41; &#61;&#61;&#61; -1515&#41; &#123; return &#125;" line217="                        let t &#61; &#40;i as number&#91;&#93;&#41;&#91;2&#93;" line218="                        let l &#61; &#40;i as number&#91;&#93;&#41;&#91;3&#93;" line219="                        switch &#40;l&#41; &#123;" line220="                            case 1&#58; &#47;&#47; only enemy level present here..." line221="                                if &#40;tick - t &#62; 75&#41; &#123; &#47;&#47; enemy fire rate!!! &#40;1 tick &#61; 0.033 seconds&#41;" line222="                                    &#40;enemies&#91;idx&#93; as number&#91;&#93;&#41;&#91;2&#93; &#61; tick" line223="                                    let p &#61; sprites.createProjectileFromSprite&#40;bullets&#91;l&#93;&#44; s&#91;0&#93;&#44; 0&#44; 50&#41;" line224="                                    sprites.setDataNumber&#40;p&#44; &#34;spawner&#34;&#44; idx&#41;" line225="                                &#125;" line226="                        &#125;" line227="                    &#125;&#41;" line228="                &#125;" line229="                if &#40;tick &#37; 50 &#61;&#61; 0&#41; &#123; &#47;&#47; player fire rate" line230="                    let q &#61; sprites.createProjectileFromSprite&#40;bullets&#91;gameD_Upgrades&#91;1&#93;&#93;&#44; player&#44; 0&#44; -75&#41;" line231="                    sprites.setDataNumber&#40;q&#44; &#34;spawner&#34;&#44; -6&#41;" line232="                &#125;" line233="                enemies.forEach&#40;function &#40;i&#44; idx&#41; &#123;" line234="                    let w &#61; &#40;i as Sprite&#91;&#93;&#41; &#47;&#47; dude why" line235="                    if &#40;w&#91;0&#93; &#61;&#61;&#61; null&#41; &#123; return &#125;" line236="                    if &#40;w&#91;1&#93; &#38;&#38; w&#91;0&#93;.x &#61;&#61; w&#91;1&#93;.x &#38;&#38; w&#91;0&#93;.y &#61;&#61; w&#91;1&#93;.y&#41; &#123;" line237="                        w&#91;1&#93;.destroy&#40;&#41;" line238="                    &#125;" line239="                &#125;&#41;" line240="                if &#40;player.isHittingTile&#40;CollisionDirection.Top&#41;&#41; &#123;" line241="                    camera.vy &#61; 0" line242="                &#125; else &#123;" line243="                    camera.vy &#61; -25" line244="                &#125;" line245="            &#125;&#41;" line246="            pauseUntil&#40;&#40;&#41; &#61;&#62; current_screen &#61;&#61; -517&#41;" line247="" line248="        default&#58;" line249="            cleanup&#40;&#41;" line250="            screen.fill&#40;15&#41;" line251="            prt_id &#61; &#34;NoneType&#34;" line252="            console.logValue&#40;&#34;ScreenID&#34;&#44; current_screen&#41;" line253="            game.onPaint&#40;function &#40;&#41; &#123;" line254="                screen.print&#40;&#34;&#92;n&#92;n&#92;n&#92;n   CRASH&#58;&#92;n   UNKNOWN SCREENID &#34; &#43; current_screen&#44; 0&#44; 0&#41;" line255="            &#125;&#41;" line256="            pause&#40;5000&#41;" line257="            game.gameOver&#40;" line258="                false" line259="            &#41;" line260="    &#125;" />
+</block>
+</statement>
+<comment pinned="false">0 &#61; menu&#44; 1 &#61; upgrades screen&#44; 2-6 &#61; levels 1-5</comment>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+<comment pinned="false">scores&#91;level&#40;s&#41;&#93;&#58; level&#91;easy&#44; normal&#44; hard&#93;</comment>
+</block>
+</next>
+<comment pinned="false">game data vars go here</comment>
+</block>
+</next>
+</block>
+</next>
+<comment pinned="false">keep as-is for now&#44; this should be from 0.5-1.5 &#40;or 0.5-2.0&#41; at max.</comment>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+</block>
+</next>
+<comment pinned="false">shit fix</comment>
+</block>
+</next>
+</block>
+</statement>
+</block>
+</xml>
