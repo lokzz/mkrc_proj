@@ -1,3 +1,9 @@
+namespace SpriteKind {
+    export const BossSprite = SpriteKind.create();
+    export const BossProjectile = SpriteKind.create();
+    export const Goto = SpriteKind.create()
+}
+
 function cleanup () {
     controller.A.onEvent(pressDown, function () { })
 controller.B.onEvent(pressDown, function () { })
@@ -47,7 +53,7 @@ const playerDMG: { [key: number]: number } = {
     3: 6
 }
 const playerHP: { [key: number]: number } = { // what does "scaling" meaning
-    1: 1,
+    1: 4,
     2: 6,
     3: 10
 }
@@ -181,6 +187,7 @@ while (true) {
             let v = 0
             let tick = 0
             let gameIsOver = false
+            let gameInBoss: number = 0 // 0 = not yet!, 1 = running cutscene*, 2 = done cutscene!!! start your horses!!!!
             let enemies: [Sprite, Sprite, number, number][] = [] // thing itself, walkTo, lastFireTick, level
 
             const yourLooks: { [key: number]: Image } = { // okay maybe this should be outside here
@@ -212,7 +219,9 @@ while (true) {
             camera.y = 60 * 16
             camera.vy = -15
 
-            // let boss =
+            let boss = sprites.create(assets.image`Boss1`)
+            boss.y = 2 * 16
+            enemies.push([boss, sprites.create(assets.image`nil`, SpriteKind.Goto), 99999999, 99999901])
 
             const effectg = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Fire, ExtraEffectPresetShape.Spark)
             sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
@@ -246,6 +255,9 @@ while (true) {
                 let d = sprites.readDataNumber(teo, "spawner")
                 if (d == -6) { return }
                 let dmg = enemyDMG[(enemies[d] as number[])[3]]
+                if (sprites.readDataNumber((enemies[d] as Sprite[])[0], "curHP") == -1515) {
+                    dmg = dmg/2
+                }
                 let statusbar
                 statusbar = statusbars.getStatusBarAttachedTo(StatusBarKind.Health, oan)
                 if (statusbar === undefined) {
@@ -293,7 +305,7 @@ while (true) {
                 if (tick % 250 == 0 && camera.y > 120) { // spawn rate here!!!
                     console.log(player.y)
                     let nloc2 = give_pos()
-                    let newTarget = sprites.create(assets.image`nil`, SpriteKind.Food)
+                    let newTarget = sprites.create(assets.image`nil`, SpriteKind.Goto)
                     newTarget.x = nloc2["x"]
                     newTarget.y = nloc2["y"]
                     let enemyLevel = enemyLevels[randint(0, enemyLevels.length-1)]
@@ -324,7 +336,7 @@ while (true) {
                         }
                     })
                 }
-                if (tick % 50 == 51) { // player fire rate
+                if (tick % 50 == 0) { // player fire rate
                     let p = sprites.createProjectileFromSprite(bullets[gameD_Upgrades[1]], player, 0, -75)
                     sprites.setDataNumber(p, "spawner", -6)
                 }
