@@ -23,7 +23,7 @@ prt_id = "-1"
 let current_diff = 1
 game.stats = true
 // game data vars go here
-let gameD_Upgrades = [3, 3]
+let gameD_Upgrades = [1, 1]
 // scores[level(s)]: level[easy, normal, hard]
 let gameD_scores = [
     [-1, -1, -1],
