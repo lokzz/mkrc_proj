@@ -23,7 +23,7 @@ prt_id = "-1"
 let current_diff = 1
 game.stats = true
 // game data vars go here
-let gameD_Upgrades = [1, 1]
+let gameD_Upgrades = [3, 3]
 // scores[level(s)]: level[easy, normal, hard]
 let gameD_scores = [
     [-1, -1, -1],
@@ -167,7 +167,7 @@ while (true) {
                 screen.print("\n\n\n\n\n\n\n\n\n\n   Upgrades  your tank's\n   bullets", 0, 0)
             }
         })
-        
+
         // function updateText()
         controller.left.onEvent(pressDown, function () { sel = !sel; console.log("Left") })
         controller.right.onEvent(pressDown, function () { sel = !sel; console.log("right") })
@@ -486,7 +486,7 @@ while (true) {
                     gameBossLastMove = tick
                 }
                 if (tick % 60 == 0) {
-                    let p = sprites.createProjectileFromSprite(bullets[1], boss, 0, 65)
+                    let p = sprites.createProjectileFromSprite(bullets[1].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
                     p.image.flipY()
@@ -799,7 +799,7 @@ while (true) {
                     gameBossLastMove = tick
                 }
                 if (tick % 60 == 0) {
-                    let p = sprites.createProjectileFromSprite(bullets[1], boss, 0, 65)
+                    let p = sprites.createProjectileFromSprite(bullets[1].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
                     p.image.flipY()
@@ -1112,7 +1112,7 @@ while (true) {
                     gameBossLastMove = tick
                 }
                 if (tick % 50 == 0) {
-                    let p = sprites.createProjectileFromSprite(bullets[2], boss, 0, 65)
+                    let p = sprites.createProjectileFromSprite(bullets[2].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
                     p.image.flipY()
@@ -1433,7 +1433,7 @@ while (true) {
                     gameBossLastMove = tick
                 }
                 if (tick % 50 == 0) {
-                    let p = sprites.createProjectileFromSprite(bullets[2], boss, 0, 65)
+                    let p = sprites.createProjectileFromSprite(bullets[2].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
                     p.image.flipY()
@@ -1747,7 +1747,7 @@ while (true) {
                     gameBossLastMove = tick
                 }
                 if (tick % 45 == 0) {
-                    let p = sprites.createProjectileFromSprite(bullets[3], boss, 0, 65)
+                    let p = sprites.createProjectileFromSprite(bullets[3].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
                     p.image.flipY()
