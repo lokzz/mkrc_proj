@@ -25,7 +25,7 @@ game.stats = true
 // game data vars go here
 let gameD_Upgrades = [1, 1]
 // scores[level(s)]: level[easy, normal, hard]
-let gameD_scores = [
+let gameD_scores: number[][] = [
     [-1, -1, -1],
     [-1, -1, -1],
     [-1, -1, -1],
@@ -94,17 +94,17 @@ while (true) {
         let difficulty = 1 // 0 = ez 1 = normal, 2 = hard (optional code, ez = 0.5x spawn/hp?, normal = 1x, hard = 1.5x)
         let dbg_isPressedA = false
         let dbg_pressedData = [0, 0]
-        const lvlList = ["Level 1", "Level 2", "Level 3", "Level 4", "Level 5"]
+        const lvlList = ["Trespass", "Disperse", "Reverse", "Pressure", "Breakthrough"]
         const diff_lv = ["Easy", "Normal", "Hard"]
         prt_id = "0-1"
         game.onPaint(function () {
             if (!(prt_id === "0-1")) { return }
 
-            screen.print(`Main Menu:\n(Up/Down: move, A: select)\n(Left/Right: difficulty)\n(Arrows to move in-game.)\n\n\n\n\n\n\n\n@proj v0.2`, 0, 0)
+            screen.print(`Beat Down Desert Fox\n(Up/Down: move, A: select)\n(Left/Right: difficulty)\n\n> [${diff_lv[difficulty]}]${gameD_scores[selection][difficulty] != -1 ? " / score: [" + gameD_scores[selection][difficulty] + "]" : " / unplayed"}\n\n\n\n\n\n\nv0.2`, 0, 0)
             // build the menu string & display here
             // screen.print("\n\n\n\n\n\n\n\n\n" + selection + " - " + difficulty, 0, 0) // debug
             let builtstr = ""
-            lvlList.forEach(function (name, idx) { builtstr += `${selection === idx ? ">" : ""} ${name} ${selection === idx ? (" - " + diff_lv[difficulty]) : ""}${(selection === idx && gameD_scores[selection][difficulty] != -1) ? " > " + gameD_scores[selection][difficulty] : ""}\n` })
+            lvlList.forEach(function (name, idx) { builtstr += `${selection === idx ? ">" : ""} ${name}\n` })
             screen.print("\n\n\n\n\n" + builtstr, 0, 0)
         })
         controller.up.onEvent(pressDown, function () { selection -= 1; selection < 0 ? selection = 4 : false })
@@ -114,10 +114,11 @@ while (true) {
         controller.A.onEvent(pressDown, function () { dbg_isPressedA = true; dbg_pressedData = [selection, difficulty] })
         pauseUntil(() => dbg_isPressedA)
         current_screen = selection + 2
+        current_diff = [0.5, 1, 2][difficulty]
         game.popScene()
     } else if (current_screen === 1) {
         game.pushScene()
-        if (gameD_Upgrades == [3, 3]) { current_screen = 0; game.popScene(); continue }
+        if (JSON.stringify(gameD_Upgrades) == JSON.stringify([3, 3])) { current_screen = 0; game.popScene(); continue }
 
         sel = null // literally a 0 and a 1, true = sld, false = atk, null = unselected
         let upg_sld = sprites.create(assets.image`upg_sld`, SpriteKind.Player)
@@ -145,7 +146,7 @@ while (true) {
             if (!(prt_id === "1-1")) { return }
 
             screen.print("\n    Choose an upgrade:\n     +DEF   or   +ATK", 2, 0)
-            if (sel === null) { return }
+            if (sel === null) { screen.print("\n\n\n\n\n\n\n\n\n\n     Left <-  -> Right", 2, 0) }
             else if (sel === true) { // again: true = sld, false = atk, null = unselected
                 let upgrade_str: string
                 if (gameD_Upgrades[0] >= 3) {
@@ -169,8 +170,14 @@ while (true) {
         })
 
         // function updateText()
-        controller.left.onEvent(pressDown, function () { sel = !sel; console.log("Left") })
-        controller.right.onEvent(pressDown, function () { sel = !sel; console.log("right") })
+        controller.left.onEvent(pressDown, function () {
+            if (sel === null) { sel = false }
+            sel = !sel; console.log("Left")
+        })
+        controller.right.onEvent(pressDown, function () {
+            if (sel === null) { sel = true }
+            sel = !sel; console.log("right")
+        })
         upg_sld.x -= 35
         upg_atk.x += 35
 
@@ -230,6 +237,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
+                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -342,6 +350,7 @@ while (true) {
                 scene.cameraShake(3, 750)
                 extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 1000, 100, 100)
                 oan.destroy()
+                info.setScore(info.score() + 1000) // boss score?
                 pause(1000)
                 player.setStayInScreen(false)
                 player.setFlag(SpriteFlag.Ghost, true)
@@ -408,7 +417,7 @@ while (true) {
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
             tick += 1
-            if (tick % (250 / current_diff) == 0 && gameInBoss == 0) { // spawn rate here!!!
+            if (tick % (250 / Math.min(1, current_diff)) == 0 && gameInBoss == 0) { // spawn rate here!!!
                 let nloc2 = give_pos()
                 let newTarget = sprites.create(assets.image`nil`, SpriteKind.Goto)
                 newTarget.x = nloc2["x"]
@@ -495,6 +504,12 @@ while (true) {
         })
 
         pauseUntil(() => gameIsOver == true)
+        let diff: { [key: number]: number } = {
+            0.5: 0,
+            1: 1,
+            2: 2
+        }
+        gameD_scores[current_screen-1][diff[current_diff]] = info.score()
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
@@ -534,6 +549,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
+                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -646,6 +662,7 @@ while (true) {
                 scene.cameraShake(3, 750)
                 extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 1000, 100, 100)
                 oan.destroy()
+                info.setScore(info.score() + 2000) // boss score?
                 pause(1000)
                 player.setStayInScreen(false)
                 player.setFlag(SpriteFlag.Ghost, true)
@@ -712,7 +729,7 @@ while (true) {
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
             tick += 1
-            if (tick % (250 / current_diff) == 0 && gameInBoss == 0) { // spawn rate here!!!
+            if (tick % (250 / Math.min(1, current_diff)) == 0 && gameInBoss == 0) { // spawn rate here!!!
                 let nloc2 = give_pos()
                 let newTarget = sprites.create(assets.image`nil`, SpriteKind.Goto)
                 newTarget.x = nloc2["x"]
@@ -808,6 +825,12 @@ while (true) {
         })
 
         pauseUntil(() => gameIsOver == true)
+        let diff: { [key: number]: number } = {
+            0.5: 0,
+            1: 1,
+            2: 2
+        }
+        gameD_scores[current_screen-1][diff[current_diff]] = info.score()
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
@@ -847,6 +870,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
+                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -959,6 +983,7 @@ while (true) {
                 scene.cameraShake(3, 750)
                 extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 1000, 100, 100)
                 oan.destroy()
+                info.setScore(info.score() + 3000) // boss score?
                 pause(1000)
                 player.setStayInScreen(false)
                 player.setFlag(SpriteFlag.Ghost, true)
@@ -1025,7 +1050,7 @@ while (true) {
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
             tick += 1
-            if (tick % (250 / current_diff) == 0 && gameInBoss == 0) { // spawn rate here!!!
+            if (tick % (250 / Math.min(1, current_diff)) == 0 && gameInBoss == 0) { // spawn rate here!!!
                 let nloc2 = give_pos()
                 let newTarget = sprites.create(assets.image`nil`, SpriteKind.Goto)
                 newTarget.x = nloc2["x"]
@@ -1121,6 +1146,12 @@ while (true) {
         })
 
         pauseUntil(() => gameIsOver == true)
+        let diff: { [key: number]: number } = {
+            0.5: 0,
+            1: 1,
+            2: 2
+        }
+        gameD_scores[current_screen-1][diff[current_diff]] = info.score()
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
@@ -1160,6 +1191,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
+                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -1272,6 +1304,7 @@ while (true) {
                 scene.cameraShake(3, 750)
                 extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 1000, 100, 100)
                 oan.destroy()
+                info.setScore(info.score() + 4000) // boss score?
                 pause(1000)
                 player.setStayInScreen(false)
                 player.setFlag(SpriteFlag.Ghost, true)
@@ -1338,7 +1371,7 @@ while (true) {
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
             tick += 1
-            if (tick % (250 / current_diff) == 0 && gameInBoss == 0) { // spawn rate here!!!
+            if (tick % (250 / Math.min(1, current_diff)) == 0 && gameInBoss == 0) { // spawn rate here!!!
                 let nloc2 = give_pos()
                 let newTarget = sprites.create(assets.image`nil`, SpriteKind.Goto)
                 newTarget.x = nloc2["x"]
@@ -1442,6 +1475,12 @@ while (true) {
         })
 
         pauseUntil(() => gameIsOver == true)
+        let diff: { [key: number]: number } = {
+            0.5: 0,
+            1: 1,
+            2: 2
+        }
+        gameD_scores[current_screen-1][diff[current_diff]] = info.score()
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
@@ -1482,6 +1521,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
+                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -1594,6 +1634,7 @@ while (true) {
                 scene.cameraShake(3, 750)
                 extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 1000, 100, 100)
                 oan.destroy()
+                info.setScore(info.score() + 5000) // boss score?
                 pause(1000)
                 player.setStayInScreen(false)
                 player.setFlag(SpriteFlag.Ghost, true)
@@ -1660,7 +1701,7 @@ while (true) {
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
             tick += 1
-            if (tick % (250 / current_diff) == 0 && gameInBoss == 0) { // spawn rate here!!!
+            if (tick % (250 / Math.min(1, current_diff)) == 0 && gameInBoss == 0) { // spawn rate here!!!
                 let nloc2 = give_pos()
                 let newTarget = sprites.create(assets.image`nil`, SpriteKind.Goto)
                 newTarget.x = nloc2["x"]
@@ -1756,6 +1797,12 @@ while (true) {
         })
 
         pauseUntil(() => gameIsOver == true)
+        let diff: { [key: number]: number } = {
+            0.5: 0,
+            1: 1,
+            2: 2
+        }
+        gameD_scores[current_screen-1][diff[current_diff]] = info.score()
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
