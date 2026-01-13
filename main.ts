@@ -247,6 +247,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
                     info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
+                    music.play(music.tonePlayable(Note.E, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -482,6 +483,7 @@ while (true) {
                                 let p = sprites.createProjectileFromSprite(bullets[l].clone(), s[0], 0, 50)
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                     }
                 })
@@ -490,6 +492,7 @@ while (true) {
                 let p = sprites.createProjectileFromSprite(bullets[gameD_Upgrades[1]], player, 0, -75)
                 sprites.setDataNumber(p, "spawner", -6)
                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
             }
             enemies.forEach(function (i, idx) { // enemy initial movement
                 let w = (i as Sprite[]) // dude why
@@ -534,6 +537,7 @@ while (true) {
                     let p = sprites.createProjectileFromSprite(bullets[1].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                    music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                     p.image.flipY()
                 }
             }
@@ -604,6 +608,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
                     info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
+                    music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -840,6 +845,7 @@ while (true) {
                                 p.image.flipY()
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                         case 2:
                             if (tick - t > 100) { // enemy fire rate!!! (1 tick = 0.033 seconds)
@@ -848,6 +854,7 @@ while (true) {
                                 p.image.flipY()
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                     }
                 })
@@ -856,6 +863,7 @@ while (true) {
                 let p = sprites.createProjectileFromSprite(bullets[gameD_Upgrades[1]], player, 0, -75)
                 sprites.setDataNumber(p, "spawner", -6)
                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
             }
             enemies.forEach(function (i, idx) { // enemy initial movement
                 let w = (i as Sprite[]) // dude why
@@ -900,6 +908,7 @@ while (true) {
                     let p = sprites.createProjectileFromSprite(bullets[1].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                    music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                     p.image.flipY()
                 }
             }
@@ -970,6 +979,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
                     info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
+                    music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -1206,6 +1216,7 @@ while (true) {
                                 p.image.flipY()
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                         case 2:
                             if (tick - t > 100) { // enemy fire rate!!! (1 tick = 0.033 seconds)
@@ -1214,6 +1225,7 @@ while (true) {
                                 p.image.flipY()
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                     }
                 })
@@ -1222,6 +1234,7 @@ while (true) {
                 let p = sprites.createProjectileFromSprite(bullets[gameD_Upgrades[1]], player, 0, -75)
                 sprites.setDataNumber(p, "spawner", -6)
                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
             }
             enemies.forEach(function (i, idx) { // enemy initial movement
                 let w = (i as Sprite[]) // dude why
@@ -1266,6 +1279,7 @@ while (true) {
                     let p = sprites.createProjectileFromSprite(bullets[2].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                    music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                     p.image.flipY()
                 }
             }
@@ -1336,6 +1350,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
                     info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
+                    music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -1572,6 +1587,7 @@ while (true) {
                                 p.image.flipY()
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                         case 2:
                             if (tick - t > 100) { // enemy fire rate!!! (1 tick = 0.033 seconds)
@@ -1580,6 +1596,7 @@ while (true) {
                                 p.image.flipY()
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                         case 3:
                             if (tick - t > 120) { // enemy fire rate!!! (1 tick = 0.033 seconds)
@@ -1588,6 +1605,7 @@ while (true) {
                                 p.image.flipY()
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                     }
                 })
@@ -1596,6 +1614,7 @@ while (true) {
                 let p = sprites.createProjectileFromSprite(bullets[gameD_Upgrades[1]], player, 0, -75)
                 sprites.setDataNumber(p, "spawner", -6)
                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
             }
             enemies.forEach(function (i, idx) { // enemy initial movement
                 let w = (i as Sprite[]) // dude why
@@ -1640,6 +1659,7 @@ while (true) {
                     let p = sprites.createProjectileFromSprite(bullets[2].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                    music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                     p.image.flipY()
                 }
             }
@@ -1712,6 +1732,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
                     info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
+                    music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -1948,6 +1969,7 @@ while (true) {
                                 p.image.flipY()
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                         case 3:
                             if (tick - t > 120) { // enemy fire rate!!! (1 tick = 0.033 seconds)
@@ -1956,6 +1978,7 @@ while (true) {
                                 p.image.flipY()
                                 sprites.setDataNumber(p, "spawner", idx)
                                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                             }
                     }
                 })
@@ -1964,6 +1987,7 @@ while (true) {
                 let p = sprites.createProjectileFromSprite(bullets[gameD_Upgrades[1]], player, 0, -75)
                 sprites.setDataNumber(p, "spawner", -6)
                 p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
             }
             enemies.forEach(function (i, idx) { // enemy initial movement
                 let w = (i as Sprite[]) // dude why
@@ -2008,6 +2032,7 @@ while (true) {
                     let p = sprites.createProjectileFromSprite(bullets[3].clone(), boss, 0, 65)
                     p.setKind(SpriteKind.BossProjectile)
                     p.setFlag(SpriteFlag.GhostThroughWalls, true)
+                    music.play(music.tonePlayable(Note.D, music.beat(BeatFraction.Quarter)), music.PlaybackMode.InBackground)
                     p.image.flipY()
                 }
             }
