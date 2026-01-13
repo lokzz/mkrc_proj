@@ -25,17 +25,18 @@ game.stats = true
 // game data vars go here
 let gameD_Upgrades = [1, 1]
 // scores[level(s)]: level[easy, normal, hard]
-let gameD_scores: number[][] = [
-    [-1, -1, -1],
-    [-1, -1, -1],
-    [-1, -1, -1],
-    [-1, -1, -1],
-    [-1, -1, -1]
-]
-settings.writeJSON("BDDF_GameData", { upg: gameD_Upgrades, scr: gameD_scores })
-const savedData = settings.readJSON("BDDF_GameData")
-gameD_Upgrades = savedData.upg
-gameD_scores = savedData.scr
+let gameD_scores: number[][]
+if (settings.exists("BDDF_GameData")) {
+    gameD_scores = settings.readJSON("BDDF_GameData").scr
+} else {
+    gameD_scores = [
+        [-1, -1, -1],
+        [-1, -1, -1],
+        [-1, -1, -1],
+        [-1, -1, -1],
+        [-1, -1, -1]
+    ]
+}
 
 const enemyDMG: { [key: number]: number } = { // level = dmg for now lol
     1: 1,
@@ -85,6 +86,7 @@ const bullets: { [key: number]: Image } = {
 const effectg = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Fire, ExtraEffectPresetShape.Spark)
 const effectp = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Smoke, ExtraEffectPresetShape.Spark)
 const effecty = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Smoke, ExtraEffectPresetShape.Cloud)
+const effectb = extraEffects.createFullPresetsSpreadEffectData(ExtraEffectPresetColor.Ice, ExtraEffectPresetShape.Spark)
 
 // 0 = menu, 1 = upgrades screen, 2-6 = levels 1-5
 while (true) {
@@ -96,16 +98,17 @@ while (true) {
         let dbg_pressedData = [0, 0]
         const lvlList = ["Trespass", "Disperse", "Reverse", "Pressure", "Breakthrough"]
         const diff_lv = ["Easy", "Normal", "Hard"]
+        settings.writeJSON("BDDF_GameData", { "scr": gameD_scores })
         prt_id = "0-1"
         game.onPaint(function () {
             if (!(prt_id === "0-1")) { return }
 
-            screen.print(`Beat Down Desert Fox\n(Up/Down: move, A: select)\n(Left/Right: difficulty)\n\n> [${diff_lv[difficulty]}]${gameD_scores[selection][difficulty] != -1 ? " / score: [" + gameD_scores[selection][difficulty] + "]" : " / unplayed"}\n\n\n\n\n\n\nv0.2`, 0, 0)
+            screen.print(`Beat Down Desert Fox\n(Up/Down: move, A: select)\n(Left/Right: difficulty)\n\n\n> [${diff_lv[difficulty]}]${gameD_scores[selection][difficulty] != -1 ? " / score: [" + gameD_scores[selection][difficulty] + "]" : " / unplayed"}`, 0, 0)
             // build the menu string & display here
             // screen.print("\n\n\n\n\n\n\n\n\n" + selection + " - " + difficulty, 0, 0) // debug
             let builtstr = ""
             lvlList.forEach(function (name, idx) { builtstr += `${selection === idx ? ">" : ""} ${name}\n` })
-            screen.print("\n\n\n\n\n" + builtstr, 0, 0)
+            screen.print("\n\n\n\n\n\n\n" + builtstr, 0, 0)
         })
         controller.up.onEvent(pressDown, function () { selection -= 1; selection < 0 ? selection = 4 : false })
         controller.down.onEvent(pressDown, function () { selection += 1; selection > 4 ? selection = 0 : false })
@@ -170,14 +173,8 @@ while (true) {
         })
 
         // function updateText()
-        controller.left.onEvent(pressDown, function () {
-            if (sel === null) { sel = false }
-            sel = !sel; console.log("Left")
-        })
-        controller.right.onEvent(pressDown, function () {
-            if (sel === null) { sel = true }
-            sel = !sel; console.log("right")
-        })
+        controller.left.onEvent(pressDown, function () { if (sel === null) { sel = false }; sel = !sel })
+        controller.right.onEvent(pressDown, function () { if (sel === null) { sel = true }; sel = !sel })
         upg_sld.x -= 35
         upg_atk.x += 35
 
@@ -204,8 +201,10 @@ while (true) {
     } else if (current_screen === 2) {
         game.pushScene()
 
+        info.setScore(0)
         let v = 0
         let tick = 0
+        let bossvx = 30
         let gameIsOver = false
         let gameInBoss: number = 0 // 0 = not yet!, 1 = running cutscene*, 2 = done cutscene!!! start your horses!!!!
         let gameInBossSlowdown: boolean = false // dude how
@@ -220,6 +219,13 @@ while (true) {
         controller.moveSprite(player, 40, 40)
         player.setStayInScreen(true)
         player.y = 58 * 16
+        
+        let energyBar = statusbars.create(4, 20, StatusBarKind.Energy)
+        energyBar.setBarBorder(1, 12)
+        energyBar.attachToSprite(player, 2)
+        energyBar.setColor(9, 15)
+        energyBar.max = 500
+        energyBar.value = 0
 
         scene.cameraFollowSprite(camera)
         camera.y = 60 * 16
@@ -229,6 +235,9 @@ while (true) {
         boss.y = -1 * 16
         enemies.push([boss, sprites.create(assets.image`nil`, SpriteKind.Goto), 99999999, 99999901])
 
+        pause(100)
+        game.showLongText("Stage 1: Trespass\n \nUse Up, Down, Left and Right to move.\nStage 1: Trespass\nYour goal is simple.\nGet to the end, and kill the target.\nStage 1: Trespass\n \nWe've equipped your tank with an\nStage 1: Trespass\nexperimental weapon which kills all enemies nearby,\nStage 1: Trespass\n \nbut it takes a while to charge up.\nStage 1: Trespass\nHit \"B\" to fire, weapon charge is on your left.\nStage 1: Trespass\nAnd also, our targets have protection against it.", DialogLayout.Top)
+
         sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
             let d = sprites.readDataNumber(teo, "spawner")
             if (d == -6) {
@@ -237,7 +246,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
-                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
+                    info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -264,6 +273,7 @@ while (true) {
             if (sprites.readDataNumber((enemies[d] as Sprite[])[0], "curHP") == -1515) {
                 dmg = dmg / 2
             }
+            info.setScore(info.score() - (dmg * 50))
             let statusbar
             statusbar = statusbars.getStatusBarAttachedTo(StatusBarKind.Health, oan)
             if (statusbar === undefined) {
@@ -277,6 +287,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -378,6 +389,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.BossProjectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -413,6 +425,28 @@ while (true) {
             oan.vy = 0
             controller.moveSprite(player, 40, 40)
         })
+        
+        controller.B.onEvent(pressDown, function () {
+            if (energyBar.value == energyBar.max && gameInBoss == 0) {
+                extraEffects.createSpreadEffectAt(effectb, player.x, player.y, 500, 200, 1000)
+                enemies.forEach(function (i, idx) {
+                    if (idx == 0) { return }
+                    let theTarget = (i as Sprite[])[0]
+                    extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
+                    theTarget.destroy()
+                    sprites.setDataNumber(theTarget, "curHP", -1515)
+                })
+                energyBar.value = 0
+            } else if (gameInBoss == 0) {
+                for (let index = 0; index < 3; index++) {
+                    energyBar.setColor(9, 2)
+                    pause(100)
+                    energyBar.setColor(9, 15)
+                    pause(100)
+                }
+            }
+        })
+
         let enemyLevels = [1] // change per level!!
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
@@ -430,6 +464,7 @@ while (true) {
                 newEnemy.follow(newTarget, 18)
                 sprites.setDataNumber(newEnemy, "maxHP", enemyHP[enemyLevel])
                 sprites.setDataNumber(newEnemy, "curHP", enemyHP[enemyLevel])
+                sprites.setDataNumber(newEnemy, "level", enemyLevel)
                 // controller.moveSprite(newEnemy, 40, 40)
                 enemies.push([newEnemy, newTarget, tick, enemyLevel])
             }
@@ -483,12 +518,12 @@ while (true) {
             if (gameInBoss == 1 && boss.y > 16) {
                 boss.vy = 0
                 gameInBoss = 2
-                boss.vx = 30
+                boss.vx = bossvx
                 gameBossLastMove = tick
             }
             if (gameInBoss == 2) {
                 if (gameBossLastMove + 20 < tick && Math.abs(player.x - boss.x) > (2 * 16)) {
-                    boss.vx = boss.x < player.x ? Math.abs(boss.vx) : -Math.abs(boss.vx)
+                    boss.vx = boss.x < player.x ? Math.abs(bossvx) : -Math.abs(bossvx)
                     gameBossLastMove = tick
                 } else if (gameBossLastMove + 80 < tick) {
                     boss.vx = -boss.vx
@@ -501,6 +536,11 @@ while (true) {
                     p.image.flipY()
                 }
             }
+            if (gameInBoss == 0) {
+                energyBar.value += 1
+            } else {
+                energyBar.setBarSize(1, 20)
+            }
         })
 
         pauseUntil(() => gameIsOver == true)
@@ -510,14 +550,17 @@ while (true) {
             2: 2
         }
         gameD_scores[current_screen-1][diff[current_diff]] = info.score()
+        info.showScore(false)
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
     } else if (current_screen === 3) {
         game.pushScene()
 
+        info.setScore(0)
         let v = 0
         let tick = 0
+        let bossvx = 30
         let gameIsOver = false
         let gameInBoss: number = 0 // 0 = not yet!, 1 = running cutscene*, 2 = done cutscene!!! start your horses!!!!
         let gameInBossSlowdown: boolean = false // dude how
@@ -533,6 +576,13 @@ while (true) {
         player.setStayInScreen(true)
         player.y = 58 * 16
 
+        let energyBar = statusbars.create(4, 20, StatusBarKind.Energy)
+        energyBar.setBarBorder(1, 12)
+        energyBar.attachToSprite(player, 2)
+        energyBar.setColor(9, 15)
+        energyBar.max = 500
+        energyBar.value = 0
+
         scene.cameraFollowSprite(camera)
         camera.y = 60 * 16
         let cameravy = -25
@@ -540,6 +590,9 @@ while (true) {
         let boss = sprites.create(assets.image`Boss2`, SpriteKind.BossSprite)
         boss.y = -1 * 16
         enemies.push([boss, sprites.create(assets.image`nil`, SpriteKind.Goto), 99999999, 99999901])
+
+        pause(100)
+        game.showLongText("Stage 2: Disperse\n \nUse Up, Down, Left and Right to move.\nStage 2: Disperse\n \nGet to the end, and kill the target.", DialogLayout.Top)
 
         sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
             let d = sprites.readDataNumber(teo, "spawner")
@@ -549,7 +602,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
-                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
+                    info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -576,6 +629,7 @@ while (true) {
             if (sprites.readDataNumber((enemies[d] as Sprite[])[0], "curHP") == -1515) {
                 dmg = dmg / 2
             }
+            info.setScore(info.score() - (dmg * 50))
             let statusbar
             statusbar = statusbars.getStatusBarAttachedTo(StatusBarKind.Health, oan)
             if (statusbar === undefined) {
@@ -589,6 +643,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -690,6 +745,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.BossProjectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -725,6 +781,28 @@ while (true) {
             oan.vy = 0
             controller.moveSprite(player, 40, 40)
         })
+
+        controller.B.onEvent(pressDown, function () {
+            if (energyBar.value == energyBar.max && gameInBoss == 0) {
+                extraEffects.createSpreadEffectAt(effectb, player.x, player.y, 500, 200, 1000)
+                enemies.forEach(function (i, idx) {
+                    if (idx == 0) { return }
+                    let theTarget = (i as Sprite[])[0]
+                    extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
+                    theTarget.destroy()
+                    sprites.setDataNumber(theTarget, "curHP", -1515)
+                })
+                energyBar.value = 0
+            } else if (gameInBoss == 0) {
+                for (let index = 0; index < 3; index++) {
+                    energyBar.setColor(9, 2)
+                    pause(100)
+                    energyBar.setColor(9, 15)
+                    pause(100)
+                }
+            }
+        })
+
         let enemyLevels = [1, 1, 2] // change per level!!
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
@@ -742,6 +820,7 @@ while (true) {
                 newEnemy.follow(newTarget, 18)
                 sprites.setDataNumber(newEnemy, "maxHP", enemyHP[enemyLevel])
                 sprites.setDataNumber(newEnemy, "curHP", enemyHP[enemyLevel])
+                sprites.setDataNumber(newEnemy, "level", enemyLevel)
                 // controller.moveSprite(newEnemy, 40, 40)
                 enemies.push([newEnemy, newTarget, tick, enemyLevel])
             }
@@ -804,12 +883,12 @@ while (true) {
             if (gameInBoss == 1 && boss.y > 16) {
                 boss.vy = 0
                 gameInBoss = 2
-                boss.vx = 30
+                boss.vx = bossvx
                 gameBossLastMove = tick
             }
             if (gameInBoss == 2) {
                 if (gameBossLastMove + 20 < tick && Math.abs(player.x - boss.x) > (2 * 16)) {
-                    boss.vx = boss.x < player.x ? Math.abs(boss.vx) : -Math.abs(boss.vx)
+                    boss.vx = boss.x < player.x ? Math.abs(bossvx) : -Math.abs(bossvx)
                     gameBossLastMove = tick
                 } else if (gameBossLastMove + 80 < tick) {
                     boss.vx = -boss.vx
@@ -822,6 +901,11 @@ while (true) {
                     p.image.flipY()
                 }
             }
+            if (gameInBoss == 0) {
+                energyBar.value += 1
+            } else {
+                energyBar.setBarSize(1, 20)
+            }
         })
 
         pauseUntil(() => gameIsOver == true)
@@ -831,14 +915,17 @@ while (true) {
             2: 2
         }
         gameD_scores[current_screen-1][diff[current_diff]] = info.score()
+        info.showScore(false)
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
     } else if (current_screen === 4) {
         game.pushScene()
 
+        info.setScore(0)
         let v = 0
         let tick = 0
+        let bossvx = 35
         let gameIsOver = false
         let gameInBoss: number = 0 // 0 = not yet!, 1 = running cutscene*, 2 = done cutscene!!! start your horses!!!!
         let gameInBossSlowdown: boolean = false // dude how
@@ -854,6 +941,13 @@ while (true) {
         player.setStayInScreen(true)
         player.y = 58 * 16
 
+        let energyBar = statusbars.create(4, 20, StatusBarKind.Energy)
+        energyBar.setBarBorder(1, 12)
+        energyBar.attachToSprite(player, 2)
+        energyBar.setColor(9, 15)
+        energyBar.max = 500
+        energyBar.value = 0
+
         scene.cameraFollowSprite(camera)
         camera.y = 60 * 16
         let cameravy = -25
@@ -861,6 +955,9 @@ while (true) {
         let boss = sprites.create(assets.image`Boss3`, SpriteKind.BossSprite)
         boss.y = -1 * 16
         enemies.push([boss, sprites.create(assets.image`nil`, SpriteKind.Goto), 99999999, 99999901])
+
+        pause(100)
+        game.showLongText("Stage 3: Reverse\n \nUse Up, Down, Left and Right to move.\nStage 3: Reverse\n \nGet to the end, and you know what to do.", DialogLayout.Top)
 
         sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
             let d = sprites.readDataNumber(teo, "spawner")
@@ -870,7 +967,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
-                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
+                    info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -897,6 +994,7 @@ while (true) {
             if (sprites.readDataNumber((enemies[d] as Sprite[])[0], "curHP") == -1515) {
                 dmg = dmg / 2
             }
+            info.setScore(info.score() - (dmg * 50))
             let statusbar
             statusbar = statusbars.getStatusBarAttachedTo(StatusBarKind.Health, oan)
             if (statusbar === undefined) {
@@ -910,6 +1008,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -1011,6 +1110,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.BossProjectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -1046,6 +1146,28 @@ while (true) {
             oan.vy = 0
             controller.moveSprite(player, 40, 40)
         })
+
+        controller.B.onEvent(pressDown, function () {
+            if (energyBar.value == energyBar.max && gameInBoss == 0) {
+                extraEffects.createSpreadEffectAt(effectb, player.x, player.y, 500, 200, 1000)
+                enemies.forEach(function (i, idx) {
+                    if (idx == 0) { return }
+                    let theTarget = (i as Sprite[])[0]
+                    extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
+                    theTarget.destroy()
+                    sprites.setDataNumber(theTarget, "curHP", -1515)
+                })
+                energyBar.value = 0
+            } else if (gameInBoss == 0) {
+                for (let index = 0; index < 3; index++) {
+                    energyBar.setColor(9, 2)
+                    pause(100)
+                    energyBar.setColor(9, 15)
+                    pause(100)
+                }
+            }
+        })
+
         let enemyLevels = [1, 2, 2, 2] // change per level!!
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
@@ -1063,6 +1185,7 @@ while (true) {
                 newEnemy.follow(newTarget, 18)
                 sprites.setDataNumber(newEnemy, "maxHP", enemyHP[enemyLevel])
                 sprites.setDataNumber(newEnemy, "curHP", enemyHP[enemyLevel])
+                sprites.setDataNumber(newEnemy, "level", enemyLevel)
                 // controller.moveSprite(newEnemy, 40, 40)
                 enemies.push([newEnemy, newTarget, tick, enemyLevel])
             }
@@ -1125,12 +1248,12 @@ while (true) {
             if (gameInBoss == 1 && boss.y > 16) {
                 boss.vy = 0
                 gameInBoss = 2
-                boss.vx = 35
+                boss.vx = bossvx
                 gameBossLastMove = tick
             }
             if (gameInBoss == 2) {
                 if (gameBossLastMove + 15 < tick && Math.abs(player.x - boss.x) > (2 * 16)) {
-                    boss.vx = boss.x < player.x ? Math.abs(boss.vx) : -Math.abs(boss.vx)
+                    boss.vx = boss.x < player.x ? Math.abs(bossvx) : -Math.abs(bossvx)
                     gameBossLastMove = tick
                 } else if (gameBossLastMove + 80 < tick) {
                     boss.vx = -boss.vx
@@ -1143,6 +1266,11 @@ while (true) {
                     p.image.flipY()
                 }
             }
+            if (gameInBoss == 0) {
+                energyBar.value += 1
+            } else {
+                energyBar.setBarSize(1, 20)
+            }
         })
 
         pauseUntil(() => gameIsOver == true)
@@ -1152,14 +1280,17 @@ while (true) {
             2: 2
         }
         gameD_scores[current_screen-1][diff[current_diff]] = info.score()
+        info.showScore(false)
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
     } else if (current_screen === 5) {
         game.pushScene()
 
+        info.setScore(0)
         let v = 0
         let tick = 0
+        let bossvx = 35
         let gameIsOver = false
         let gameInBoss: number = 0 // 0 = not yet!, 1 = running cutscene*, 2 = done cutscene!!! start your horses!!!!
         let gameInBossSlowdown: boolean = false // dude how
@@ -1175,6 +1306,13 @@ while (true) {
         player.setStayInScreen(true)
         player.y = 58 * 16
 
+        let energyBar = statusbars.create(4, 20, StatusBarKind.Energy)
+        energyBar.setBarBorder(1, 12)
+        energyBar.attachToSprite(player, 2)
+        energyBar.setColor(9, 15)
+        energyBar.max = 500
+        energyBar.value = 0
+
         scene.cameraFollowSprite(camera)
         camera.y = 60 * 16
         let cameravy = -25
@@ -1182,6 +1320,9 @@ while (true) {
         let boss = sprites.create(assets.image`Boss4`, SpriteKind.BossSprite)
         boss.y = -1 * 16
         enemies.push([boss, sprites.create(assets.image`nil`, SpriteKind.Goto), 99999999, 99999901])
+
+        pause(100)
+        game.showLongText("Stage 4: Pressure\n \nUse Up, Down, Left and Right to move.\nStage 4: Pressure\n \nGood job. You're almost there.\nStage 4: Pressure\nThey're bringing in the stronger tanks, so be careful.", DialogLayout.Top)
 
         sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
             let d = sprites.readDataNumber(teo, "spawner")
@@ -1191,7 +1332,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
-                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
+                    info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -1218,6 +1359,7 @@ while (true) {
             if (sprites.readDataNumber((enemies[d] as Sprite[])[0], "curHP") == -1515) {
                 dmg = dmg / 2
             }
+            info.setScore(info.score() - (dmg * 50))
             let statusbar
             statusbar = statusbars.getStatusBarAttachedTo(StatusBarKind.Health, oan)
             if (statusbar === undefined) {
@@ -1231,6 +1373,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -1332,6 +1475,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.BossProjectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -1367,6 +1511,28 @@ while (true) {
             oan.vy = 0
             controller.moveSprite(player, 40, 40)
         })
+
+        controller.B.onEvent(pressDown, function () {
+            if (energyBar.value == energyBar.max && gameInBoss == 0) {
+                extraEffects.createSpreadEffectAt(effectb, player.x, player.y, 500, 200, 1000)
+                enemies.forEach(function (i, idx) {
+                    if (idx == 0) { return }
+                    let theTarget = (i as Sprite[])[0]
+                    extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
+                    theTarget.destroy()
+                    sprites.setDataNumber(theTarget, "curHP", -1515)
+                })
+                energyBar.value = 0
+            } else if (gameInBoss == 0) {
+                for (let index = 0; index < 3; index++) {
+                    energyBar.setColor(9, 2)
+                    pause(100)
+                    energyBar.setColor(9, 15)
+                    pause(100)
+                }
+            }
+        })
+
         let enemyLevels = [2, 3] // change per level!!
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
@@ -1384,6 +1550,7 @@ while (true) {
                 newEnemy.follow(newTarget, 18)
                 sprites.setDataNumber(newEnemy, "maxHP", enemyHP[enemyLevel])
                 sprites.setDataNumber(newEnemy, "curHP", enemyHP[enemyLevel])
+                sprites.setDataNumber(newEnemy, "level", enemyLevel)
                 // controller.moveSprite(newEnemy, 40, 40)
                 enemies.push([newEnemy, newTarget, tick, enemyLevel])
             }
@@ -1454,12 +1621,12 @@ while (true) {
             if (gameInBoss == 1 && boss.y > 16) {
                 boss.vy = 0
                 gameInBoss = 2
-                boss.vx = 35
+                boss.vx = bossvx
                 gameBossLastMove = tick
             }
             if (gameInBoss == 2) {
                 if (gameBossLastMove + 15 < tick && Math.abs(player.x - boss.x) > (2 * 16)) {
-                    boss.vx = boss.x < player.x ? Math.abs(boss.vx) : -Math.abs(boss.vx)
+                    boss.vx = boss.x < player.x ? Math.abs(bossvx) : -Math.abs(bossvx)
                     gameBossLastMove = tick
                 } else if (gameBossLastMove + 80 < tick) {
                     boss.vx = -boss.vx
@@ -1472,6 +1639,11 @@ while (true) {
                     p.image.flipY()
                 }
             }
+            if (gameInBoss == 0) {
+                energyBar.value += 1
+            } else {
+                energyBar.setBarSize(1, 20)
+            }
         })
 
         pauseUntil(() => gameIsOver == true)
@@ -1481,21 +1653,25 @@ while (true) {
             2: 2
         }
         gameD_scores[current_screen-1][diff[current_diff]] = info.score()
+        info.showScore(false)
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
     } else if (current_screen === 6) {
         game.pushScene()
 
+        info.setScore(0)
         let v = 0
         let tick = 0
+        let bossvx = 37
         let gameIsOver = false
         let gameInBoss: number = 0 // 0 = not yet!, 1 = running cutscene*, 2 = done cutscene!!! start your horses!!!!
         let gameInBossSlowdown: boolean = false // dude how
         let gameBossLastMove: number = 0 // use tick
         let enemies: [Sprite, Sprite, number, number][] = [] // thing itself, walkTo, lastFireTick, level
 
-        tiles.setCurrentTilemap(tilemap`level03_map`)
+        if (current_diff == 2) { tiles.setCurrentTilemap(tilemap`level04_map`) }
+        else { tiles.setCurrentTilemap(tilemap`level03_map`) }
 
         let camera = sprites.create(assets.image`nil`, SpriteKind.Player)
         let player = sprites.create(yourLooks[gameD_Upgrades[0]], SpriteKind.Player)
@@ -1503,6 +1679,13 @@ while (true) {
         controller.moveSprite(player, 40, 40)
         player.setStayInScreen(true)
         player.y = 58 * 16
+
+        let energyBar = statusbars.create(4, 20, StatusBarKind.Energy)
+        energyBar.setBarBorder(1, 12)
+        energyBar.attachToSprite(player, 2)
+        energyBar.setColor(9, 15)
+        energyBar.max = 500
+        energyBar.value = 0
 
         scene.cameraFollowSprite(camera)
         camera.setFlag(SpriteFlag.Ghost, true)
@@ -1513,6 +1696,9 @@ while (true) {
         boss.y = -1 * 16
         enemies.push([boss, sprites.create(assets.image`nil`, SpriteKind.Goto), 99999999, 99999901])
 
+        pause(100)
+        game.showLongText("Stage 5: Breakthrough\n \nUse Up, Down, Left and Right to move.\nStage 5: Breakthrough\nYou've done well.\nThe last target's in a city area,\nStage 5: Breakthrough\n \nso avoid the civilian houses and buildings.", DialogLayout.Top)
+
         sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Projectile, function (oan, teo) {
             let d = sprites.readDataNumber(teo, "spawner")
             if (d == -6) {
@@ -1521,7 +1707,7 @@ while (true) {
                     sprites.setDataNumber(oan, "curHP", -1515)
                     extraEffects.createSpreadEffectAt(effectg, oan.x, oan.y, 100)
                     oan.destroy()
-                    info.setScore(info.score() + (100 * (enemies[d] as number[])[3]))
+                    info.setScore(info.score() + (100 * sprites.readDataNumber(oan, "level")))
                 } else {
                     let newHP = curHP - gameD_Upgrades[1]
                     let statusbar
@@ -1548,6 +1734,7 @@ while (true) {
             if (sprites.readDataNumber((enemies[d] as Sprite[])[0], "curHP") == -1515) {
                 dmg = dmg / 2
             }
+            info.setScore(info.score() - (dmg * 50))
             let statusbar
             statusbar = statusbars.getStatusBarAttachedTo(StatusBarKind.Health, oan)
             if (statusbar === undefined) {
@@ -1561,6 +1748,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -1662,6 +1850,7 @@ while (true) {
             statusbar.value = statusbar.value - dmg
             if (statusbar.value <= 0) {
                 game.onUpdate(function () { }) // stop it
+                sprites.destroyAllSpritesOfKind(SpriteKind.BossProjectile)
                 camera.vy = 0
                 controller.moveSprite(player, 0, 0)
                 scene.cameraFollowSprite(oan)
@@ -1697,6 +1886,28 @@ while (true) {
             oan.vy = 0
             controller.moveSprite(player, 40, 40)
         })
+
+        controller.B.onEvent(pressDown, function () {
+            if (energyBar.value == energyBar.max && gameInBoss == 0) {
+                extraEffects.createSpreadEffectAt(effectb, player.x, player.y, 500, 200, 1000)
+                enemies.forEach(function (i, idx) {
+                    if (idx == 0) { return }
+                    let theTarget = (i as Sprite[])[0]
+                    extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
+                    theTarget.destroy()
+                    sprites.setDataNumber(theTarget, "curHP", -1515)
+                })
+                energyBar.value = 0
+            } else if (gameInBoss == 0) {
+                for (let index = 0; index < 3; index++) {
+                    energyBar.setColor(9, 2)
+                    pause(100)
+                    energyBar.setColor(9, 15)
+                    pause(100)
+                }
+            }
+        })
+
         let enemyLevels = [3] // change per level!!
         game.onUpdate(function () {
             // console.log(mySprite.tilemapLocation().x)
@@ -1714,6 +1925,7 @@ while (true) {
                 newEnemy.follow(newTarget, 18)
                 sprites.setDataNumber(newEnemy, "maxHP", enemyHP[enemyLevel])
                 sprites.setDataNumber(newEnemy, "curHP", enemyHP[enemyLevel])
+                sprites.setDataNumber(newEnemy, "level", enemyLevel)
                 // controller.moveSprite(newEnemy, 40, 40)
                 enemies.push([newEnemy, newTarget, tick, enemyLevel])
             }
@@ -1776,12 +1988,12 @@ while (true) {
             if (gameInBoss == 1 && boss.y > 16) {
                 boss.vy = 0
                 gameInBoss = 2
-                boss.vx = 37
+                boss.vx = bossvx
                 gameBossLastMove = tick
             }
             if (gameInBoss == 2) {
                 if (gameBossLastMove + 15 < tick && Math.abs(player.x - boss.x) > (2 * 16)) {
-                    boss.vx = boss.x < player.x ? Math.abs(boss.vx) : -Math.abs(boss.vx)
+                    boss.vx = boss.x < player.x ? Math.abs(bossvx) : -Math.abs(bossvx)
                     gameBossLastMove = tick
                 } else if (gameBossLastMove + 80 < tick) {
                     boss.vx = -boss.vx
@@ -1794,6 +2006,11 @@ while (true) {
                     p.image.flipY()
                 }
             }
+            if (gameInBoss == 0) {
+                energyBar.value += 1
+            } else {
+                energyBar.setBarSize(1, 20)
+            }
         })
 
         pauseUntil(() => gameIsOver == true)
@@ -1803,6 +2020,7 @@ while (true) {
             2: 2
         }
         gameD_scores[current_screen-1][diff[current_diff]] = info.score()
+        info.showScore(false)
         // current_screen should be set in their separate death logic handlers
 
         game.popScene()
