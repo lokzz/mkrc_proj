@@ -16,7 +16,7 @@ let prt_id = ""
 // shit fix
 let sel: any = null
 let prt_summoned: Array<string> = []
-let current_screen = 0
+let current_screen = 1
 const pressDown = ControllerButtonEvent.Pressed
 prt_id = "-1"
 // keep as-is for now, this should be from 0.5-1.5 (or 0.5-2.0) at max.
@@ -149,7 +149,7 @@ while (true) {
             if (!(prt_id === "1-1")) { return }
 
             screen.print("\n    Choose an upgrade:\n     +DEF   or   +ATK", 2, 0)
-            if (sel === null) { screen.print("\n\n\n\n\n\n\n\n\n\n     Left <-  -> Right", 2, 0) }
+            if (sel === null) { screen.print("\n\n\n\n\n\n\n\n\n\n     Left <-  -> Right", 2, 0); screen.print("\n\n\n\n\n\n\n\n\n\n\n      Hit A to select.", 0, 0) }
             else if (sel === true) { // again: true = sld, false = atk, null = unselected
                 let upgrade_str: string
                 if (gameD_Upgrades[0] >= 3) {
