@@ -435,6 +435,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
                     theTarget.destroy()
                     sprites.setDataNumber(theTarget, "curHP", -1515)
+                    info.setScore(info.score() + 50)
                 })
                 energyBar.value = 0
             } else if (gameInBoss == 0) {
@@ -791,6 +792,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
                     theTarget.destroy()
                     sprites.setDataNumber(theTarget, "curHP", -1515)
+                    info.setScore(info.score() + 50)
                 })
                 energyBar.value = 0
             } else if (gameInBoss == 0) {
@@ -1156,6 +1158,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
                     theTarget.destroy()
                     sprites.setDataNumber(theTarget, "curHP", -1515)
+                    info.setScore(info.score() + 50)
                 })
                 energyBar.value = 0
             } else if (gameInBoss == 0) {
@@ -1521,6 +1524,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
                     theTarget.destroy()
                     sprites.setDataNumber(theTarget, "curHP", -1515)
+                    info.setScore(info.score() + 50)
                 })
                 energyBar.value = 0
             } else if (gameInBoss == 0) {
@@ -1896,6 +1900,7 @@ while (true) {
                     extraEffects.createSpreadEffectAt(effectg, theTarget.x, theTarget.y, 100)
                     theTarget.destroy()
                     sprites.setDataNumber(theTarget, "curHP", -1515)
+                    info.setScore(info.score() + 50)
                 })
                 energyBar.value = 0
             } else if (gameInBoss == 0) {
